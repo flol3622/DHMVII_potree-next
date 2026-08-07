@@ -16,8 +16,6 @@
 
 </div>
 
----
-
 ## 🌍 What is this?
 
 The Netherlands has had [**ahn2.pointclouds.nl**](http://ahn2.pointclouds.nl/) since 2015 — a web page where anyone can fly through 640 billion LiDAR points of an entire country. No login, no software, no GIS degree. It is still one of the nicest pieces of open-data outreach in the field. 🇳🇱
@@ -31,8 +29,6 @@ Turns out: a lot less than in 2015. 🎉
 The whole thing is **one file**, streamed straight from a plain web server. No tile pyramid on disk, no database, no tiling service, no backend. The browser asks for the ~2 MB of that 3.3 TB file it needs for your current view, and nothing else.
 
 > 🎓 **On scope.** This is a *transformation* project, not a new dataset. Every point here is public DHMV II data, re-encoded into a format a browser can read. The research contribution is the pipeline and the demonstration — not the survey, which the Flemish government paid for and released.
-
----
 
 ## ✨ What it does
 
@@ -51,8 +47,6 @@ The whole thing is **one file**, streamed straight from a plain web server. No t
 
 <!-- 📸 SCREENSHOT: side-by-side or single shot of elevation colouring vs. classification colouring on the same scene. -->
 ![Colour modes](docs/screenshots/colour-modes.png)
-
----
 
 ## 🚦 Status & roadmap
 
@@ -74,8 +68,6 @@ The whole thing is **one file**, streamed straight from a plain web server. No t
 | 🧭 | Deep links (`?x=…&y=…&z=…`) so a view can be shared or cited. |
 
 > 💡 Got hosting capacity for a 3.3 TB range-request-friendly bucket? That is currently the single thing standing between this repo and a public Flemish AHN2. Get in touch.
-
----
 
 ## 🧩 How it works
 
@@ -109,8 +101,6 @@ The real run: **21.5 hours**, 372 core-hours, peak RSS 26 GiB, and a *lot* of sp
 A heavily condensed and re-skinned build of [**m-schuetz/Potree-Next**](https://github.com/m-schuetz/Potree-Next), Markus Schütz's rewrite of Potree — **the piece that made COPC usable inside Potree at all.**
 
 What lives here is not a fork in the git sense. The upstream tree was reduced to the runtime a single deployment needs, and the history did not survive the import (so the exact upstream commit is, honestly, not recorded — see [Provenance](#-provenance-the-honest-version)). On top of that sits a small application layer: DHMV crop and camera, the status panel, the map, a Vite build, and dev middleware that serves the local COPC with proper `206 Partial Content` responses.
-
----
 
 ## 🚀 Try it locally
 
@@ -172,8 +162,6 @@ Needs `aria2c`, `tar`, [`uv`](https://docs.astral.sh/uv/), and `copc_converter` 
 
 </details>
 
----
-
 ## 🗂️ Repository layout
 
 ```text
@@ -188,8 +176,6 @@ Needs `aria2c`, `tar`, [`uv`](https://docs.astral.sh/uv/), and `copc_converter` 
 ```
 
 > ⚠️ Potree resolves its workers, GUI fragments, translations, icons, and textures *relative to `potree.js` at runtime*. Keep the structure inside `public/vendor/potree/` intact.
-
----
 
 ## 🙏 Credits
 
@@ -206,8 +192,6 @@ This project is mostly other people's excellent work, glued together with intent
 
 Also quietly essential: 🗺️ **OpenStreetMap** contributors (base map, ODbL), 🔍 **Photon**/Komoot (geocoding), and the browser libraries under `public/vendor/libs/` — OpenLayers, proj4js, jQuery, jQuery UI, jsTree, d3, spectrum, tween.js, i18next, copc.js.
 
----
-
 ## 🎓 Funding & acknowledgements
 
 <a href="https://www.ugent.be/en"><img src="docs/logos/ugent.png" alt="Ghent University" height="80" align="left" hspace="20" vspace="6"></a>
@@ -219,8 +203,6 @@ and storage the conversion needed — a 21.5-hour job across a multi-terabyte
 collection is not something you run on a laptop.
 
 <br clear="left">
-
----
 
 ## ⚖️ Licence
 
@@ -284,8 +266,6 @@ The COPC we produced is a *derived work of that data*, not of this software. So:
 
 > Point cloud: DHMV II, © Digitaal Vlaanderen, open data. Viewer: Flanders in Points, AGPL-3.0, derived from Potree-Next (Markus Schütz). Format: COPC (Hobu, Inc.). Conversion: copc-converter (360-geo).
 
----
-
 ## 🔍 Provenance
 
 Two things about this repository are worth stating:
@@ -293,8 +273,6 @@ Two things about this repository are worth stating:
 **The upstream history is gone.** Potree-Next was imported by reduction, not by fork. The git history and upstream remote did not come along, and no revision file was kept — so the exact upstream commit this started from **is not recorded**.
 
 **The runtime isn't pure Potree-Next.** The surviving bundle pairs the COPC loader with classic Potree 1.8-compatible runtime and GUI assets. That is why the deployed API is `Potree.Viewer`, why the bundle reports version 1.8.0, and why the layout looks nothing like the WebGPU-focused upstream source tree. The *provenance* is Potree-Next; the *composition* is a hybrid.
-
----
 
 <div align="center">
 
