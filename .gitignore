@@ -25,9 +25,6 @@ dist/
 .vite/
 *.tsbuildinfo
 
-# Local point-cloud data
-pointclouds/*
-
 # Editors
 .idea/
 .vscode/
