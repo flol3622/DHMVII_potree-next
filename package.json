@@ -1,0 +1,11 @@
+{
+  "name": "dhmv-potree-next-viewer",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Minimal Potree Next viewer for the DHMV COPC",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "license": "BSD-2-CLAUSE"
+}
