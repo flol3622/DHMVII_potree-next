@@ -124,8 +124,8 @@ resetView();
 // Its generous Z span removes extreme outliers without clipping Belgian terrain.
 const cropVolume = new Potree.BoxVolume({ clip: true });
 cropVolume.name = "Lambert72 crop";
-cropVolume.position.set(0, 0, 1000);
-cropVolume.scale.set(CROP.maxX - CROP.minX, CROP.maxY - CROP.minY, 20000);
+cropVolume.position.set(0, 0, -6000);
+cropVolume.scale.set(CROP.maxX - CROP.minX, CROP.maxY - CROP.minY, 15000);
 cropVolume.clip = true;
 cropVolume.visible = false;
 viewer.scene.addVolume(cropVolume);
