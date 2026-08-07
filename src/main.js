@@ -1,11 +1,12 @@
 import {
   CENTER,
   CROP,
+  ELEVATION_RANGE,
   GEOCODER_URL,
   INITIAL_VIEW,
   MAP_TILE_URL,
+  POINT_CLOUD_NAME,
   POINT_CLOUD_URL,
-  TEST_POINT_CLOUD_URL,
 } from "./config.js";
 import { initializeMapTab } from "./map.js";
 import "./styles/main.css";
@@ -133,14 +134,12 @@ viewer.scene.addVolume(cropVolume);
 let pointCloud = null;
 const startedAt = performance.now();
 
-// Loaded independently (not awaited at the top level) so that a stuck or
-// failed load can never block the other point cloud from loading.
-async function loadMainPointCloud() {
+async function loadPointCloud() {
   try {
     const event = await Potree.loadPointCloud(POINT_CLOUD_URL, "rawpoints_flat_BE");
     pointCloud = event.pointcloud;
     // The scene tree labels each node with this name; without it the row is blank.
-    pointCloud.name = "DHMV Flanders";
+    pointCloud.name = POINT_CLOUD_NAME;
     pointCloud.position.set(-CENTER.x, -CENTER.y, 0);
     pointCloud.minimumNodePixelSize = 55;
     pointCloud.pointBudget = 5_000_000;
@@ -150,10 +149,11 @@ async function loadMainPointCloud() {
     material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
     material.shape = Potree.PointShape.CIRCLE;
     material.activeAttributeName = "elevation";
-    material.elevationRange = [-20, 350];
+    material.elevationRange = ELEVATION_RANGE;
 
     viewer.scene.addPointCloud(pointCloud);
-    viewer.setMoveSpeed(25000);
+    const cropDiagonal = Math.hypot(CROP.maxX - CROP.minX, CROP.maxY - CROP.minY);
+    viewer.setMoveSpeed(Math.max(50, Math.min(25000, cropDiagonal / 10)));
     resetView();
     status.textContent = `Streaming COPC · header ${(performance.now() - startedAt).toFixed(0)} ms`;
     statusDot.classList.add("ready");
@@ -166,24 +166,7 @@ async function loadMainPointCloud() {
   }
 }
 
-// TEST DATA — comment out this call (and the function above it) before deploying to production.
-async function loadTestPointCloud() {
-  try {
-    const testEvent = await Potree.loadPointCloud(TEST_POINT_CLOUD_URL, "test");
-    const testPointCloud = testEvent.pointcloud;
-    testPointCloud.name = "Test tile";
-    testPointCloud.position.set(-CENTER.x, -CENTER.y, 0);
-    testPointCloud.material.size = 1.2;
-    testPointCloud.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
-    testPointCloud.material.shape = Potree.PointShape.CIRCLE;
-    viewer.scene.addPointCloud(testPointCloud);
-  } catch (error) {
-    console.error("Failed to load test point cloud", error);
-  }
-}
-
-loadMainPointCloud();
-loadTestPointCloud(); // TEST DATA — comment out to disable in production.
+loadPointCloud();
 
 document.getElementById("reset-view").addEventListener("click", () => resetView(450));
 

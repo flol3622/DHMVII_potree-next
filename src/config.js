@@ -1,5 +1,4 @@
 const DEFAULT_POINT_CLOUD_PATH = "pointclouds/rawpoints_flat_BE.copc.laz";
-const TEST_POINT_CLOUD_PATH = "pointclouds/test.copc.laz";
 
 function resolvePointCloudUrl(value) {
   const configuredUrl = value?.trim() || DEFAULT_POINT_CLOUD_PATH;
@@ -7,9 +6,8 @@ function resolvePointCloudUrl(value) {
 }
 
 export const POINT_CLOUD_URL = resolvePointCloudUrl(import.meta.env.VITE_POINT_CLOUD_URL);
-
-// Test dataset URL, only used by the test-data loading block in main.js.
-export const TEST_POINT_CLOUD_URL = resolvePointCloudUrl(TEST_POINT_CLOUD_PATH);
+export const POINT_CLOUD_NAME = "DHMV Flanders";
+export const ELEVATION_RANGE = Object.freeze([-20, 350]);
 
 export const MAP_TILE_URL =
   import.meta.env.VITE_MAP_TILE_URL?.trim() ||

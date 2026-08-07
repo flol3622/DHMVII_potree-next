@@ -9,7 +9,7 @@
 [![License: AGPL v3](https://img.shields.io/badge/code-AGPL--3.0-blue.svg)](LICENSE)
 [![Format: COPC](https://img.shields.io/badge/format-COPC-8a2be2.svg)](https://copc.io/)
 [![Data: DHMV II](https://img.shields.io/badge/data-DHMV%20II-0b7285.svg)](https://remotesensing.vlaanderen.be/apps/openlidar/)
-[![Status: test data live](https://img.shields.io/badge/status-test%20data%20live-f59f00.svg)](#-status--roadmap)
+[![Status: test data live](https://img.shields.io/badge/status-test%20data%20live-f59f00.svg)](https://flol3622.github.io/DHMVII_potree-next/)
 
 <!-- 📸 SCREENSHOT: hero shot. Oblique view over a city (Ghent/Antwerp), elevation colouring, map panel visible in the corner. Wide crop, ~1600px. -->
 ![The viewer](docs/screenshots/hero.png)
@@ -56,14 +56,13 @@ The whole thing is **one file**, streamed straight from a plain web server. No t
 | :-- | :-- |
 | ✅ | **The full-Flanders COPC exists.** 3.3 TB, built, verified, sitting on HPC storage. |
 | ⏳ | **Hosting is the blocker.** Serving 3.3 TB with byte-range support is an infrastructure question, not a code question. Conversations ongoing. |
-| ✅ | **A small test COPC ships with the repo** so you can clone this and have something on screen in about thirty seconds. |
+| ✅ | **A small test COPC powers the [GitHub Pages viewer](https://flol3622.github.io/DHMVII_potree-next/)** from the separate `gh-pages` branch. |
 | ✅ | **Navigation map + address search** — added so people who aren't point-cloud people can still find their own house. |
 
 **Next up:**
 
 | | |
 | :-- | :-- |
-| 🎯 | **Select-and-download from the viewer** — draw a box, pick a resolution, get a LAZ. This is the big one: it turns the viewer from a demo into a tool, and it's what made the AHN2 site genuinely useful. |
 | 🌐 | Public hosting of the full cloud, once storage lands. |
 | 🧭 | Deep links (`?x=…&y=…&z=…`) so a view can be shared or cited. |
 
@@ -102,27 +101,21 @@ A heavily condensed and re-skinned build of [**m-schuetz/Potree-Next**](https://
 
 What lives here is not a fork in the git sense. The upstream tree was reduced to the runtime a single deployment needs, and the history did not survive the import (so the exact upstream commit is, honestly, not recorded — see [Provenance](#-provenance-the-honest-version)). On top of that sits a small application layer: DHMV crop and camera, the status panel, the map, a Vite build, and dev middleware that serves the local COPC with proper `206 Partial Content` responses.
 
-## 🚀 Try it locally
+## 🚀 Try it
 
-You need **Node.js** `^20.19.0` or `>=22.12.0` and npm. That's it — the small test COPC is already in the repo.
+The [GitHub Pages viewer](https://flol3622.github.io/DHMVII_potree-next/) runs against a small test COPC. The `gh-pages` branch contains that test deployment and frames the camera around its 500 × 500 m footprint.
+
+To run the full-cloud branch locally, you need **Node.js** `^20.19.0` or `>=22.12.0`, npm, and access to the full COPC:
 
 ```bash
+mkdir -p pointclouds
+ln -s /path/to/rawpoints_flat_BE.copc.laz pointclouds/rawpoints_flat_BE.copc.laz
 npm install && npm run dev
 ```
 
 Open <http://localhost:5173> and you're flying. 🛫
 
-<details>
-<summary>🗃️ <b>Pointing it at the full cloud instead</b></summary>
-
-Drop a link to your local copy:
-
-```bash
-mkdir -p pointclouds
-ln -s /path/to/rawpoints_flat_BE.copc.laz pointclouds/rawpoints_flat_BE.copc.laz
-```
-
-Or point at a remote host via `.env`:
+You can also point at a remote range-enabled host via `.env`:
 
 ```dotenv
 VITE_POINT_CLOUD_URL=https://data.example.org/rawpoints_flat_BE.copc.laz
@@ -130,9 +123,7 @@ VITE_POINT_CLOUD_URL=https://data.example.org/rawpoints_flat_BE.copc.laz
 
 The host must support `GET`, `HEAD`, and single byte ranges. Cross-origin? It also needs to allow the `Range` request header and expose `Accept-Ranges`, `Content-Length`, and `Content-Range` through CORS.
 
-The dataset itself is gitignored — it never enters the bundle, and it never should.
-
-</details>
+The full dataset is represented on `main` only by a symlink; it never enters the bundle or repository history.
 
 <details>
 <summary>📦 <b>Building the static site</b></summary>
@@ -144,8 +135,6 @@ npm run build && npm run preview
 Output lands in `dist/`, and that directory is the entire website. The point cloud is hosted separately (or mounted by the web server at `pointclouds/…` relative to `index.html`).
 
 `VITE_BASE_PATH=./` keeps the bundle portable between a domain root and a subdirectory; set something like `/flanders-points/` if your platform insists. See [.env.example](.env.example).
-
-⚠️ **Before deploying publicly:** the test cloud is loaded by an explicitly marked block at the bottom of [src/main.js](src/main.js:169). Comment it out.
 
 </details>
 
@@ -170,7 +159,7 @@ Needs `aria2c`, `tar`, [`uv`](https://docs.astral.sh/uv/), and `copc_converter` 
 ├── src/                # the DHMV-specific layer — main.js, map.js, config.js, styles
 ├── pipeline/           # HPC scripts that turned 42 tar archives into one COPC
 ├── public/vendor/      # retained Potree runtime + browser libraries
-├── pointclouds/        # test COPC + local link to the full one (gitignored)
+├── pointclouds/        # full-cloud symlink on main; test COPC on gh-pages
 ├── docs/screenshots/   # images used by this README
 └── vite.config.js      # static build + local Range middleware
 ```
