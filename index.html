@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <meta name="theme-color" content="#071013" />
+    <meta name="theme-color" content="#ffed00" />
     <meta
       name="description"
       content="Interactive DHMV point-cloud viewer powered by Potree Next"
@@ -121,8 +121,21 @@
 
     <template id="project-summary-template">
       <section class="project-summary" aria-label="DHMV stream status">
-        <div class="eyebrow">Potree Next · native COPC</div>
-        <h1>DHMV / Belgium</h1>
+        <div class="project-wordmark">
+          <span class="project-wordmark-mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+              <path d="M8 31c8-1 11-11 20-11 5 0 8 3 12 6" />
+              <path d="M8 23c7-1 10-8 18-8 6 0 10 3 14 6" />
+              <path d="M8 38c9-1 13-11 22-11 4 0 7 2 10 4" />
+            </svg>
+          </span>
+          <span class="project-wordmark-copy">
+            <strong>DHMV</strong>
+            <span>3D point-cloud viewer</span>
+          </span>
+        </div>
+        <div class="eyebrow">Digital height model · Belgium</div>
+        <h1>Explore the landscape</h1>
         <div class="subtitle">
           <span id="status-dot" class="status-dot"></span>
           <span id="status">Reading COPC header…</span>
@@ -133,7 +146,12 @@
           <div class="metric"><strong id="deepest-level">—</strong><span>Deepest LOD</span></div>
           <div class="metric"><strong id="active-loads">—</strong><span>Active loads</span></div>
         </div>
-        <button id="reset-view" class="sidebar-action" type="button">Reset crop view</button>
+        <button id="reset-view" class="sidebar-action" type="button">
+          <span>Reset crop view</span>
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="m9 6-6 6 6 6M3 12h12a6 6 0 0 0 0-12" />
+          </svg>
+        </button>
       </section>
     </template>
 

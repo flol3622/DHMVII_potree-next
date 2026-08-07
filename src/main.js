@@ -17,12 +17,21 @@ const formatNumber = new Intl.NumberFormat("en", {
 const viewer = new Potree.Viewer(document.getElementById("potree_render_area"));
 window.viewer = viewer;
 
-const sidebarWidth = () => Math.min(340, Math.max(0, window.innerWidth - 48));
+const sidebarWidth = () => Math.min(360, Math.max(0, window.innerWidth - 48));
+const renderArea = $("#potree_render_area");
+const sidebarIsOpen = () => Number.parseFloat(renderArea.css("left")) > 0;
+
+function setSidebarOpen(isOpen) {
+  renderArea.css("left", isOpen ? `${sidebarWidth()}px` : "0px");
+  document.documentElement.classList.toggle("sidebar-open", isOpen);
+}
+
 viewer.toggleSidebar = () => {
-  const renderArea = $("#potree_render_area");
-  const isOpen = Number.parseFloat(renderArea.css("left")) > 0;
-  renderArea.css("left", isOpen ? "0px" : `${sidebarWidth()}px`);
+  setSidebarOpen(!sidebarIsOpen());
 };
+window.addEventListener("resize", () => {
+  if (sidebarIsOpen()) setSidebarOpen(true);
+});
 
 viewer.setEDLEnabled(true);
 viewer.setEDLRadius(1.35);
@@ -37,6 +46,30 @@ await viewer.loadGUI();
 document.getElementById("sidebar_root").prepend(
   document.getElementById("project-summary-template").content.cloneNode(true),
 );
+
+document.querySelectorAll("#potree_menu > h3").forEach((header, index) => {
+  const content = header.nextElementSibling;
+  if (!content) return;
+
+  const contentId = `potree-menu-section-${index}`;
+  content.id = contentId;
+  header.setAttribute("role", "button");
+  header.setAttribute("tabindex", "0");
+  header.setAttribute("aria-controls", contentId);
+  header.setAttribute("aria-expanded", "false");
+
+  header.addEventListener("click", () => {
+    const isOpen = !header.classList.contains("is-open");
+    header.classList.toggle("is-open", isOpen);
+    header.setAttribute("aria-expanded", String(isOpen));
+  });
+  header.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    header.click();
+  });
+});
+
 viewer.setLanguage("en");
 viewer.toggleSidebar();
 

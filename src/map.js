@@ -28,15 +28,15 @@ const CAMERA_SVG = `
   <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">
     <defs>
       <filter id="s" x="-30%" y="-30%" width="160%" height="160%">
-        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#071013" flood-opacity=".7"/>
+        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#172027" flood-opacity=".45"/>
       </filter>
     </defs>
     <g filter="url(#s)">
-      <path d="M28 3 21 15h14L28 3Z" fill="#8bf5c6" stroke="#071013" stroke-width="2"/>
-      <rect x="12" y="16" width="32" height="25" rx="7" fill="#102426" stroke="#eafff7" stroke-width="2.5"/>
-      <path d="m44 23 8-4v19l-8-4V23Z" fill="#102426" stroke="#eafff7" stroke-width="2.5" stroke-linejoin="round"/>
-      <circle cx="28" cy="28.5" r="7" fill="#57c7ff" stroke="#eafff7" stroke-width="2.5"/>
-      <circle cx="28" cy="28.5" r="2.5" fill="#071013"/>
+      <path d="M28 3 21 15h14L28 3Z" fill="#ffed00" stroke="#333332" stroke-width="2"/>
+      <rect x="12" y="16" width="32" height="25" rx="3" fill="#ffffff" stroke="#333332" stroke-width="2.5"/>
+      <path d="m44 23 8-4v19l-8-4V23Z" fill="#ffffff" stroke="#333332" stroke-width="2.5" stroke-linejoin="round"/>
+      <circle cx="28" cy="28.5" r="7" fill="#0055cc" stroke="#333332" stroke-width="2.5"/>
+      <circle cx="28" cy="28.5" r="2.5" fill="#ffffff"/>
     </g>
   </svg>`;
 
@@ -149,11 +149,11 @@ export function initializeMapTab({ viewer, center, crop, tileUrl, geocoderUrl })
   const cameraFeature = new ol.Feature({ geometry: new ol.geom.Point([0, 0]) });
 
   const footprintStyle = new ol.style.Style({
-    fill: new ol.style.Fill({ color: "rgba(87, 199, 255, 0.2)" }),
-    stroke: new ol.style.Stroke({ color: "rgba(111, 216, 255, 0.95)", width: 2 }),
+    fill: new ol.style.Fill({ color: "rgba(0, 85, 204, 0.18)" }),
+    stroke: new ol.style.Stroke({ color: "rgba(0, 85, 204, 0.95)", width: 2 }),
   });
   const headingStyle = new ol.style.Style({
-    stroke: new ol.style.Stroke({ color: "rgba(139, 245, 198, 0.9)", width: 2 }),
+    stroke: new ol.style.Stroke({ color: "rgba(51, 51, 50, 0.9)", width: 2 }),
   });
   const cameraIcon = new ol.style.Icon({
     anchor: [0.5, 0.52],
@@ -196,7 +196,7 @@ export function initializeMapTab({ viewer, center, crop, tileUrl, geocoderUrl })
   coverageFeature.setStyle(
     new ol.style.Style({
       stroke: new ol.style.Stroke({
-        color: "rgba(139, 245, 198, 0.52)",
+        color: "rgba(51, 51, 50, 0.56)",
         lineDash: [6, 7],
         width: 1.5,
       }),
