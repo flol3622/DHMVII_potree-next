@@ -1,4 +1,4 @@
-const DEFAULT_POINT_CLOUD_PATH = "pointclouds/rawpoints_flat_BE.copc.laz";
+const DEFAULT_POINT_CLOUD_PATH = "pointclouds/test.copc.laz";
 
 function resolvePointCloudUrl(value) {
   const configuredUrl = value?.trim() || DEFAULT_POINT_CLOUD_PATH;
@@ -6,8 +6,8 @@ function resolvePointCloudUrl(value) {
 }
 
 export const POINT_CLOUD_URL = resolvePointCloudUrl(import.meta.env.VITE_POINT_CLOUD_URL);
-export const POINT_CLOUD_NAME = "DHMV Flanders";
-export const ELEVATION_RANGE = Object.freeze([-20, 350]);
+export const POINT_CLOUD_NAME = "DHMV test tile";
+export const ELEVATION_RANGE = Object.freeze([3, 84]);
 
 export const MAP_TILE_URL =
   import.meta.env.VITE_MAP_TILE_URL?.trim() ||
@@ -18,10 +18,10 @@ export const GEOCODER_URL =
   "https://photon.komoot.io/api/";
 
 export const CROP = Object.freeze({
-  minX: -2200,
-  minY: 106182,
-  maxX: 293263,
-  maxY: 278396,
+  minX: 105000,
+  minY: 193500,
+  maxX: 105499.99,
+  maxY: 193999.99,
 });
 
 export const CENTER = Object.freeze({
@@ -30,6 +30,6 @@ export const CENTER = Object.freeze({
 });
 
 export const INITIAL_VIEW = Object.freeze({
-  position: [0, -205000, 265000],
-  target: [0, 0, 75],
+  position: [0, -700, 500],
+  target: [0, 0, 40],
 });
