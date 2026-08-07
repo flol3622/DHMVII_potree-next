@@ -297,6 +297,7 @@ html:not(.sidebar-open) #potree_sidebar_container {
   color: var(--muted) !important;
 }
 
+.potree-engine-tag,
 #potree_version_number {
   font-size: 11px !important;
   font-weight: 400 !important;
@@ -1416,6 +1417,93 @@ input[type="button"] {
 
 .map-canvas .ol-attribution a {
   color: var(--action);
+}
+
+/* ---------------------------------------------------------------------------
+   About panel
+   --------------------------------------------------------------------------- */
+
+/* Paragraph rhythm inside the panel is handled per-block, so the generic 16px
+   row margin would double up on every prose blob. */
+#potree_menu .about-panel > .about-block {
+  margin-bottom: 20px !important;
+}
+
+.about-block p {
+  margin: 0 0 9px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.about-block p:last-child {
+  margin-bottom: 0;
+}
+
+.about-note {
+  color: var(--muted);
+  font-size: 11px !important;
+}
+
+.about-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-bottom: 11px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.about-step:last-child {
+  margin-bottom: 0;
+}
+
+.about-step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.about-step br + *,
+.about-step b {
+  display: inline;
+}
+
+.about-credit {
+  margin-bottom: 10px;
+  padding-left: 9px;
+  border-left: 2px solid var(--line);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.about-credit a {
+  font-weight: 600;
+}
+
+.about-credit span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.about-cite {
+  margin-top: 10px !important;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface-muted);
+  color: var(--muted);
+  font-size: 11px !important;
+  line-height: 1.5;
 }
 
 .error-card {
