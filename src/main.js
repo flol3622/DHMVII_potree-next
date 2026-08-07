@@ -1,4 +1,12 @@
-import { CENTER, CROP, INITIAL_VIEW, POINT_CLOUD_URL } from "./config.js";
+import {
+  CENTER,
+  CROP,
+  GEOCODER_URL,
+  INITIAL_VIEW,
+  MAP_TILE_URL,
+  POINT_CLOUD_URL,
+} from "./config.js";
+import { initializeMapTab } from "./map.js";
 import "./styles/main.css";
 
 const formatNumber = new Intl.NumberFormat("en", {
@@ -31,6 +39,14 @@ document.getElementById("sidebar_root").prepend(
 );
 viewer.setLanguage("en");
 viewer.toggleSidebar();
+
+initializeMapTab({
+  viewer,
+  center: CENTER,
+  crop: CROP,
+  tileUrl: MAP_TILE_URL,
+  geocoderUrl: GEOCODER_URL,
+});
 
 const status = document.getElementById("status");
 const statusDot = document.getElementById("status-dot");

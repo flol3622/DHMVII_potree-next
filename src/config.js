@@ -7,6 +7,14 @@ function resolvePointCloudUrl(value) {
 
 export const POINT_CLOUD_URL = resolvePointCloudUrl(import.meta.env.VITE_POINT_CLOUD_URL);
 
+export const MAP_TILE_URL =
+  import.meta.env.VITE_MAP_TILE_URL?.trim() ||
+  "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+
+export const GEOCODER_URL =
+  import.meta.env.VITE_GEOCODER_URL?.trim() ||
+  "https://photon.komoot.io/api/";
+
 export const CROP = Object.freeze({
   minX: -2200,
   minY: 106182,

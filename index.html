@@ -19,7 +19,103 @@
 
   <body>
     <div class="potree_container">
-      <div id="potree_render_area"></div>
+      <div id="potree_render_area">
+        <button
+          id="map-tab-button"
+          class="map-tab-button"
+          type="button"
+          aria-controls="potree_map"
+          aria-expanded="false"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="m3 5 5-2 8 3 5-2v15l-5 2-8-3-5 2V5Z" />
+            <path d="M8 3v15M16 6v15" />
+          </svg>
+          <span>Map</span>
+        </button>
+
+        <section id="potree_map" class="map-panel" aria-label="Map navigation" hidden>
+          <header id="potree_map_header" class="map-panel-header">
+            <div>
+              <span class="map-panel-eyebrow">Position &amp; view</span>
+              <strong>Map</strong>
+            </div>
+            <div class="map-panel-actions">
+              <button id="map-frame-view" type="button" title="Frame the current 3D view">
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                <span>Frame view</span>
+              </button>
+              <button id="map-close" class="map-close" type="button" aria-label="Close map">
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="m6 6 12 12M18 6 6 18" />
+                </svg>
+              </button>
+            </div>
+          </header>
+
+          <form id="map-search-form" class="map-search" role="search">
+            <label class="sr-only" for="map-search-input">Search for a location in Belgium</label>
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="6" />
+              <path d="m16 16 4 4" />
+            </svg>
+            <input
+              id="map-search-input"
+              name="address"
+              type="search"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-controls="map-search-results"
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Place, street or address in Belgium"
+              enterkeyhint="search"
+            />
+            <button id="map-search-submit" type="submit">Go</button>
+          </form>
+
+          <div
+            id="map-search-results"
+            class="map-search-results"
+            role="listbox"
+            aria-label="Possible locations"
+            hidden
+          ></div>
+          <div class="map-canvas-shell">
+            <div id="potree_map_content" class="map-canvas" aria-label="Interactive map"></div>
+            <dl class="map-camera-parameters" aria-label="Live camera parameters">
+              <div>
+                <dt>Scene Z</dt>
+                <dd id="map-camera-height">—</dd>
+              </div>
+              <div>
+                <dt>Tilt</dt>
+                <dd id="map-camera-tilt">—</dd>
+              </div>
+              <div>
+                <dt>Heading</dt>
+                <dd id="map-camera-heading">—</dd>
+              </div>
+            </dl>
+          </div>
+
+          <footer class="map-panel-footer">
+            <div class="map-legend" aria-label="Map legend">
+              <span><i class="legend-camera"></i>Camera</span>
+              <span><i class="legend-footprint"></i>Visible patch</span>
+            </div>
+            <span id="map-camera-readout">Locating camera…</span>
+          </footer>
+          <p id="map-status" class="map-status" role="status">
+            Click the map to center that location in a north-facing 60° view (maximum scene Z 500 m).
+          </p>
+        </section>
+      </div>
       <div id="potree_sidebar_container"></div>
     </div>
 
