@@ -11,6 +11,8 @@
 [![Data: DHMV II](https://img.shields.io/badge/data-DHMV%20II-0b7285.svg)](https://remotesensing.vlaanderen.be/apps/openlidar/)
 [![Status: test data live](https://img.shields.io/badge/status-test%20data%20live-f59f00.svg)](https://flol3622.github.io/DHMVII_potree-next/)
 
+### [▶ Open the live test viewer](https://flol3622.github.io/DHMVII_potree-next/)
+
 <!-- 📸 SCREENSHOT: hero shot. Oblique view over a city (Ghent/Antwerp), elevation colouring, map panel visible in the corner. Wide crop, ~1600px. -->
 ![The viewer](docs/screenshots/hero.png)
 
