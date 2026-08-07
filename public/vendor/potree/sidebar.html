@@ -2,13 +2,13 @@
 <div id="sidebar_root" class="">
 	<div id="sidebar_header">
 		<span id="potree_branding" class="potree_sidebar_brand">
-			<a href="http://potree.org" target="_blank">potree.org</a> 
-			<span style="margin: 0px 3px; color: #9AA1A4"> - </span> 
-			<a href="https://github.com/potree/potree" target="_blank">github</a>
-			<span style="margin: 0px 3px; color: #9AA1A4"> - </span> 
-			<a href="https://twitter.com/m_schuetz" target="_blank">twitter</a>
+			<a href="https://github.com/flol3622/DHMVII_potree-next" target="_blank" rel="noopener">source</a>
+			<span style="margin: 0px 3px"> · </span>
+			<a href="https://remotesensing.vlaanderen.be/apps/openlidar/" target="_blank" rel="noopener">DHMV&nbsp;II data</a>
+			<span style="margin: 0px 3px"> · </span>
+			<a href="https://copc.io/" target="_blank" rel="noopener">COPC</a>
 			<span style="flex-grow: 1"></span>
-			<span id="potree_version_number" style="color: #9AA1A4; font-size: 80%; font-weight: 100"></span>
+			<span class="potree-engine-tag">Potree&nbsp;<span id="potree_version_number"></span></span>
 		</span>
 		<div id="potree_languages" style="font-family:arial;"></div>
 	</div>
@@ -168,89 +168,72 @@
 		<!-- ABOUT -->
 		<h3 id="menu_about"><span data-i18n="tb.about_opt"></span></h3>
 		<div>
-			<ul class="pv-menu-list">
-				<li><a href="http://potree.org" target="_blank">Potree</a> is a viewer for large point cloud / LIDAR data sets, developed at the Vienna University of Technology. 
-				<a href="https://github.com/potree/potree" target="_blank">(github)</a>
+			<ul class="pv-menu-list about-panel">
+
+				<li class="about-block">
+					<p><b>Flanders in Points</b> streams DHMV&nbsp;II &mdash; the Flemish government&rsquo;s national LiDAR survey, flown 2013&ndash;2015 at &ge;&nbsp;8&nbsp;points/m&sup2; &mdash; straight into this browser tab. No install, no download, no desktop GIS.</p>
+					<p>The whole cloud is <b>one COPC file</b> on a plain web server: no tile pyramid, no database, no backend. The browser requests the couple of megabytes of that file your current view needs, and nothing else.</p>
+					<p class="about-note">A research demonstration built at Ghent University on public open data. Every point here is DHMV&nbsp;II, re-encoded &mdash; the survey is not ours.</p>
 				</li>
-				<li><b>Author: </b><a href="mailto:mschuetz@potree.org">Markus Sch&uuml;tz</a></li>
-				<li><b>License: </b><a target="_blank" href="https://github.com/potree/potree/blob/develop/LICENSE/">FreeBSD (2-clause BSD)</a></li>
-				<li><b>Dependency Licenses:</b> <a target="_blank" href="https://github.com/potree/potree/tree/develop/libs/">See github</a></li>
 
-<li>
-<b>Funding:</b>
-Potree is funded by a combination of research projects, companies, institutions and individuals. If you're making good use of Potree, please consider funding its future development <a href="https://github.com/sponsors/potree">via Github Sponsors</a> or by directly inquiring <a href="mailto:mschuetz@potree.org">via e-mail</a>.
+				<div class="divider"><span>How it works</span></div>
 
-<br>
-<br>
-Research projects who's funding contributes to Potree:
+				<li class="about-block">
+					<div class="about-step">
+						<span class="about-step-num">1</span>
+						<span><b><a href="https://remotesensing.vlaanderen.be/apps/openlidar/" target="_blank" rel="noopener">DHMV&nbsp;II</a></b><br>100k+ open LAZ tiles, ~3.3&nbsp;TB, fetched onto HPC storage.</span>
+					</div>
+					<div class="about-step">
+						<span class="about-step-num">2</span>
+						<span><b><a href="https://github.com/360-geo/copc-converter" target="_blank" rel="noopener">copc_converter</a></b><br>An out-of-core Rust merge into a single COPC octree &mdash; 21.5&nbsp;hours, 372 core-hours.</span>
+					</div>
+					<div class="about-step">
+						<span class="about-step-num">3</span>
+						<span><b>This viewer</b><br>Potree-Next, reduced to what one deployment needs, reading HTTP byte ranges.</span>
+					</div>
+				</li>
 
-<table>
-	<tr>
-		<th>Project Name</th>
-		<th>Funding Agency</th>
-	</tr>
-	<tr>
-		<td><a href="https://projekte.ffg.at/projekt/3851914">LargeClouds2BIM</a></td>
-		<td><a href="https://www.ffg.at/">FFG</a></td>
-	</tr>
-	<tr>
-		<td><a href="https://harvest4d.org/">Harvest4D</a></td>
-		<td><a href="https://ec.europa.eu/transport/themes/research/fp7_en">EU 7th Framework Program 323567</a></td>
-	</tr>
-	<tr>
-		<td><a href="https://gcd.tuwien.ac.at/">GCD Doctoral College</a></td>
-		<td><a href="https://www.tuwien.at/en/">TU Wien</a></td>
-	</tr>
-	<tr>
-		<td><a href="https://www.cg.tuwien.ac.at/research/projects/Superhumans/">Superhumans</a></td>
-		<td><a href="https://www.fwf.ac.at/">FWF</a></td>
-	</tr>
-</table>
+				<div class="divider"><span>Built on</span></div>
 
-<br>
-Thanks to all the companies and institutions funding Potree:
+				<li class="about-block">
+					<div class="about-credit">
+						<a href="https://remotesensing.vlaanderen.be/apps/openlidar/" target="_blank" rel="noopener">Digitaal Vlaanderen</a>
+						<span>The DHMV&nbsp;II survey itself &mdash; flown, processed, and released openly.</span>
+					</div>
+					<div class="about-credit">
+						<a href="https://copc.io/" target="_blank" rel="noopener">Hobu, Inc.</a>
+						<span>The COPC specification. One file, no tiling, no special server.</span>
+					</div>
+					<div class="about-credit">
+						<a href="https://github.com/360-geo/copc-converter" target="_blank" rel="noopener">360-geo / copc-converter</a>
+						<span>The converter that merged the whole tile collection into one octree. MIT.</span>
+					</div>
+					<div class="about-credit">
+						<a href="https://github.com/m-schuetz/Potree-Next" target="_blank" rel="noopener">Markus Sch&uuml;tz</a>
+						<span>Potree and Potree-Next &mdash; a decade of rendering massive point clouds in a browser, and the COPC support underneath this page. AGPL-3.0.</span>
+					</div>
+					<div class="about-credit">
+						<a href="https://www.ugent.be/hpc/en" target="_blank" rel="noopener">Ghent University HPC</a>
+						<span>Compute, storage, and patience for a 21.5-hour job.</span>
+					</div>
+					<p class="about-note">Base map &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors (ODbL); geocoding by <a href="https://photon.komoot.io/" target="_blank" rel="noopener">Photon</a>/Komoot. Bundled browser libraries keep their own licences.</p>
+				</li>
 
-<table style="width: 100%; text-align: center;">
-	<tr>
-		<th style="padding-top: 0.7em;">• Diamond •</th>
-	</tr>
-	
-	<tr><td><a href="http://www.ne.ch/autorites/DDTE/SGRF/SITN/Pages/accueil.aspx">SITN</a> </td></tr>
-	<tr><td><a href="http://synth.earth/">Synth</a></td></tr>
-	<tr><td><a href="http://www.geocue.com">GeoCue Group</a> </td></tr>
-	<tr><td><a href="http://rapidlasso.com">Rapidlasso</a> </td></tr>
+				<div class="divider"><span>Licence</span></div>
 
-	<tr>
-		<th style="padding-top: 0.7em;">• Gold •</th>
-	</tr>
-	<tr><td><a href="https://www.bart.gov">BART</a></td></tr>
-	<tr>
-		<th style="padding-top: 0.7em;">• Silver •</th>
-	</tr>
-	<tr><td><a href="https://biology.anu.edu.au/research/facilities/australian-plant-phenomics-facility-anu">APPF ANU</a></td></tr>
-	<tr><td><a href="https://www.limit-addict.fr/">LimitAddict</a></td></tr>
-	<tr><td><a href="http://georepublic.info">Georepublic</a></td></tr>
-	<tr>
-		<th style="padding-top: 0.7em;">• Bronze •</th>
-	</tr>
-	<tr><td><a href="https://www.eventart.at/">EventArt</a></td></tr>
-	<tr><td><a href="https://www.geodelta.com/">Geodelta</a></td></tr>
-	<tr><td><a href="https://www.e-cassini.fr/">E-Cassini</a></td></tr>
-	<tr><td><a href="https://www.sogelink.fr/">Sogelink</a></td></tr>
-	<tr><td>Data-viewer</td></tr>
-	<tr><td><a href="http://www.helimap.com/">Helimap</a></td></tr>
-	<tr><td><a href="http://www.vevey.ch/">Vevey</a></td></tr>
-	<tr><td><a href="https://www.yverdon-les-bains.ch/">yverdon-les-bains</a></td></tr>
-	<tr><td><a href="http://archpro.lbg.ac.at">LBI ArchPro</a> </td></tr>
-	<tr><td><a href="http://www.kts.co.jp">KTS</a></td></tr>
-	<tr><td><a href="http://veesus.com">Veesus</a></td></tr>
-	<tr><td><a href="http://www.sigeom.ch">Sigeom</a></td></tr>
-</table>
-</li>
+				<li class="about-block">
+					<p><b>The code</b> is <a href="https://github.com/flol3622/DHMVII_potree-next/blob/main/LICENSE" target="_blank" rel="noopener">AGPL-3.0-only</a>, inherited from Potree-Next. Because you are using it over a network, &sect;&nbsp;13 applies and the source of this deployment is public: <a href="https://github.com/flol3622/DHMVII_potree-next" target="_blank" rel="noopener">github.com/flol3622/DHMVII_potree-next</a>.</p>
+					<p><b>The data</b> is not ours to license. DHMV&nbsp;II is Flemish government open data, and its core condition is attribution to the data owner. Check the <a href="https://remotesensing.vlaanderen.be/apps/openlidar/" target="_blank" rel="noopener">source</a> before redistributing anything derived from it.</p>
+					<p>Use it, fly through it, screenshot it, cite it. Suggested attribution:</p>
+					<p class="about-cite">Point cloud: DHMV&nbsp;II, &copy;&nbsp;Digitaal Vlaanderen, open data. Viewer: Flanders in Points, AGPL-3.0, derived from Potree-Next (Markus Sch&uuml;tz). Format: COPC (Hobu,&nbsp;Inc.). Conversion: copc-converter (360-geo).</p>
+				</li>
 
-				
+				<div class="divider"><span>Funding</span></div>
 
-			
+				<li class="about-block">
+					<p>This work has been (partially) funded by the <b>Flanders AI Research program</b>, and carried out at <a href="https://www.ugent.be/en" target="_blank" rel="noopener">Ghent University</a>, whose HPC infrastructure provided the compute and storage the conversion needed.</p>
+				</li>
+
 			</ul>
 		</div>
 
