@@ -72,6 +72,14 @@ This Potree-Next derivative is distributed under the **GNU Affero General Public
 
 Vendored components remain under their respective licenses. In particular, the retained classic Potree runtime carries its BSD 2-Clause license in `public/vendor/potree/LICENSE`; the other bundled libraries keep their license files beside their code.
 
+## How the point cloud was made
+
+The COPC itself is not built by this repository, but the pipeline that produced it
+is included. [`pipeline/`](pipeline/README.md) holds the HPC job scripts that
+download the public DHMV II LiDAR tiles, normalize every tile to a single
+EPSG:31370 WKT CRS record, and merge the collection into the 3.3 TB
+`rawpoints_flat_BE.copc.laz` the viewer streams.
+
 ## Local development
 
 Requirements are Node.js `^20.19.0` or `>=22.12.0`, npm, and a local COPC link at `pointclouds/rawpoints_flat_BE.copc.laz`.
@@ -119,6 +127,7 @@ The default `VITE_BASE_PATH=./` makes the bundle portable to a domain root or su
 .
 ├── index.html             # Vite HTML entry point
 ├── src/                   # DHMV-specific integration code and styles
+├── pipeline/              # HPC scripts that produced the COPC from DHMV II tiles
 ├── public/vendor/         # Runtime assets retained during the upstream cleanup
 ├── pointclouds/           # Local-only COPC link; excluded from builds and Git
 ├── vite.config.js         # Static build plus local Range middleware

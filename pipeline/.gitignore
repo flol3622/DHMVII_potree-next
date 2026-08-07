@@ -1,0 +1,6 @@
+# PBS job stdout/stderr, monitor logs, and Python bytecode from local runs.
+*.o*
+*.e*
+*.swp
+*.log
+__pycache__/

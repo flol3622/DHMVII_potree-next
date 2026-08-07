@@ -69,13 +69,28 @@ select:focus-visible {
 }
 
 #potree_sidebar_container {
+  /* Potree "hides" the sidebar by letting the render area cover it, which only
+     works while the sidebar stays underneath. It is stacked above instead — so
+     it never flickers through the canvas — and slid out of view when closed. */
+  z-index: 2;
+  transition: transform 220ms ease;
   width: var(--sidebar-width) !important;
   background: var(--surface);
   border-top: 8px solid var(--accent);
   border-right: 1px solid var(--line);
   box-shadow: 12px 0 32px rgba(23, 32, 39, 0.18);
   font-size: 13px;
+  overflow-x: hidden;
+  scrollbar-width: thin;
   scrollbar-color: #8695a8 #f3f5f6;
+}
+
+html:not(.sidebar-open) #potree_sidebar_container {
+  box-shadow: none;
+  pointer-events: none;
+  transform: translateX(-101%);
+  visibility: hidden;
+  transition: transform 220ms ease, visibility 0s linear 220ms;
 }
 
 #sidebar_root {
@@ -216,7 +231,7 @@ select:focus-visible {
 
 .metric span {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -256,47 +271,120 @@ select:focus-visible {
   stroke-linejoin: round;
 }
 
+/* ---------------------------------------------------------------------------
+   Potree sidebar header: branding + language switcher
+   --------------------------------------------------------------------------- */
+
 #sidebar_header {
-  padding: 10px 22px 9px;
+  display: grid;
+  gap: 9px;
+  padding: 12px 22px 13px;
   border-bottom: 1px solid var(--line);
   background: var(--surface-muted);
 }
 
 #potree_branding {
+  display: flex !important;
+  align-items: center;
   margin: 0;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 400;
+  line-height: 1.4;
+}
+
+#potree_branding span {
+  color: var(--muted) !important;
+}
+
+#potree_version_number {
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  font-variant-numeric: tabular-nums;
 }
 
 #potree_sidebar_container a {
   color: var(--action);
+  text-decoration: none;
 }
 
-#potree_languages {
-  margin-top: 7px;
+#potree_sidebar_container a:hover {
+  text-decoration: underline;
 }
+
+/* Collapses the bare " - " text nodes between the language links so they can be
+   laid out as evenly spaced chips instead. */
+#potree_languages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  font-family: inherit !important;
+  font-size: 0;
+}
+
+#potree_languages a {
+  margin: 0 !important;
+  padding: 4px 5px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: var(--action);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+#potree_languages a:hover {
+  border-color: var(--line);
+  background: #e6eefa;
+  text-decoration: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Accordion
+   --------------------------------------------------------------------------- */
 
 #potree_menu {
-  padding: 13px 14px 32px;
+  padding: 14px 14px 32px;
 }
 
 #potree_menu > h3 {
-  margin: 5px 0 0;
-  padding: 12px 13px 12px 36px;
+  position: relative;
+  margin: 8px 0 0;
+  padding: 13px 14px 13px 36px;
   border: 1px solid var(--line);
   border-radius: 3px;
   background: var(--surface-muted) !important;
   box-shadow: none;
   color: var(--ink);
-  font: 600 12px/1.3 "Segoe UI", Arial, Helvetica, sans-serif;
+  font: 600 13px/1.3 "Segoe UI", Arial, Helvetica, sans-serif;
   letter-spacing: 0;
   text-shadow: none;
+}
+
+#potree_menu > h3:first-child {
+  margin-top: 0;
+}
+
+#potree_menu > h3::before {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  content: "";
+  transform: translateY(-70%) rotate(-45deg);
+  transition: transform 150ms ease;
 }
 
 #potree_menu > h3:hover {
   border-color: #8695a8;
   background: #e8ebee !important;
+  filter: none;
 }
 
 #potree_menu > h3.is-open {
@@ -306,8 +394,12 @@ select:focus-visible {
   color: var(--ink);
 }
 
+#potree_menu > h3.is-open::before {
+  transform: translateY(-25%) rotate(45deg);
+}
+
 #potree_menu > h3 + div {
-  padding: 14px 14px 16px;
+  padding: 16px 16px 4px;
   border: 1px solid var(--line);
   border-top: 0;
   border-radius: 0 0 3px 3px;
@@ -315,34 +407,109 @@ select:focus-visible {
   color: var(--font-color);
 }
 
-.pv-menu-list {
-  padding: 0;
+/* ---------------------------------------------------------------------------
+   Menu content: rhythm, labels, controls
+   --------------------------------------------------------------------------- */
+
+/* Potree indents every list item by 20px, which double-indents nested lists and
+   leaves controls out of line with their section padding. */
+#potree_menu .pv-menu-list {
+  margin: 0 !important;
+  overflow: visible;
 }
 
-.pv-menu-list > li {
-  margin: 8px 0;
+/* Rows sit at varying depths — some panels wrap them in one or two extra divs —
+   so the spacing goes on the rows themselves and is cleared again on anything
+   that merely wraps other rows. */
+#potree_menu .pv-menu-list > *,
+#potree_menu .pv-menu-list li:not(.jstree-node) {
+  margin: 0 0 16px !important;
+}
+
+#potree_menu .pv-menu-list *:has(li) {
+  margin-bottom: 0 !important;
+}
+
+#potree_menu li,
+#potree_menu .pv-menu-list > div {
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+#potree_menu label:not(.ui-button):not(.pv-select-label) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 26px;
+  color: var(--ink);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Labels that sit above a select are followed by a <br>, which would add an
+   empty line once the label becomes a block. */
+#potree_menu .pv-select-label {
+  display: block;
+  margin: 0 0 5px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+#potree_menu .pv-select-label + br {
+  display: none;
+}
+
+/* Potree writes "Opacity:<value>" without a separating space. */
+#lblOpacity::before {
+  content: "\a0";
+}
+
+#potree_menu input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: var(--action);
+  cursor: pointer;
 }
 
 .divider {
-  margin: 15px 0 9px;
+  margin: 20px 0 12px !important;
+  padding: 0 !important;
   border-color: var(--line);
+}
+
+#potree_menu > h3 + div > .pv-menu-list > .divider:first-child,
+#potree_menu .divider:first-child {
+  margin-top: 0 !important;
 }
 
 .divider > span {
   background: var(--surface);
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
+.divider > span::before,
+.divider > span::after {
+  background: var(--line);
+}
+
+/* Icon button grids (measurement, clipping, navigation) */
 .button-icon {
-  margin: 3px;
+  width: 36px !important;
+  height: 36px !important;
+  margin: 0 6px 6px 0 !important;
   padding: 6px;
   border: 1px solid var(--line);
   border-radius: 3px;
   background: var(--surface);
+  vertical-align: middle;
   transition: 120ms ease;
 }
 
@@ -353,25 +520,93 @@ select:focus-visible {
   transform: translateY(-1px);
 }
 
-.ui-slider {
-  height: 5px !important;
+/* Sliders — the inline margin keeps the handle from touching the panel edge at
+   the extremes of the track. */
+.ui-slider,
+#potree_menu .pv-menu-list .ui-slider {
+  height: 6px !important;
+  margin: 11px 8px 3px !important;
   border: 0 !important;
-  border-radius: 0 !important;
-  background: #cbd2da !important;
+  border-radius: 3px !important;
+  background: #d3d9e0 !important;
 }
 
 .ui-slider-range {
-  border-radius: 0;
+  border-radius: 3px;
   background: var(--action) !important;
 }
 
 .ui-slider-handle {
-  top: -5px !important;
-  width: 15px !important;
-  height: 15px !important;
+  top: -6px !important;
+  width: 17px !important;
+  height: 17px !important;
   border: 2px solid var(--action) !important;
   border-radius: 50% !important;
   background: #fff !important;
+  box-shadow: 0 1px 3px rgba(23, 32, 39, 0.3);
+  cursor: grab;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+  margin-left: -8px !important;
+}
+
+.ui-slider-handle:active {
+  cursor: grabbing;
+}
+
+/* Segmented option groups (background, clip task, camera projection, …) */
+/* Potree writes `border-style: solid solid solid none` inline on the first
+   option, which leaves the group without a left edge. */
+#potree_menu .ui-button.ui-state-default,
+#potree_menu label.ui-state-default {
+  display: inline-flex !important;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--line) !important;
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  font-size: 11px !important;
+  font-weight: 600;
+  text-shadow: none;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+#potree_menu .ui-state-default:hover {
+  background: #e6eefa !important;
+}
+
+#potree_menu .ui-state-default.ui-state-active,
+#potree_menu .ui-state-active {
+  border-color: #d5c600 !important;
+  background: var(--accent) !important;
+  color: var(--ink) !important;
+}
+
+/* The caption of an option group is a <legend>, which otherwise sits flush
+   against the buttons underneath it. */
+#potree_menu selectgroup legend {
+  display: block;
+  margin: 0 0 6px;
+  padding: 0;
+  color: var(--ink);
+  font-size: 12px;
+}
+
+#potree_menu select,
+#potree_menu .ui-selectmenu-button {
+  width: 100%;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
 }
 
 select,
@@ -383,28 +618,248 @@ input[type="button"] {
   color: var(--ink);
 }
 
-selectgroup option {
-  border-color: var(--line) !important;
-  background: var(--surface) !important;
+#potree_menu input[type="text"],
+#potree_menu input[type="number"] {
+  min-height: 30px;
+  padding: 4px 8px;
+  font-size: 12px;
 }
 
-selectgroup option[selected] {
-  border-color: #d5c600 !important;
-  background: var(--accent) !important;
+#potree_menu input[type="button"],
+#potree_menu button:not(.ui-button) {
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--action);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#potree_menu input[type="button"]:hover,
+#potree_menu button:not(.ui-button):hover {
+  border-color: var(--action);
+  background: #e6eefa;
+}
+
+/* Spectrum colour swatches in the classification list */
+#potree_menu .sp-replacer {
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface);
+}
+
+#potree_menu .sp-replacer:hover {
+  border-color: var(--action);
+}
+
+#potree_menu .sp-preview {
+  width: 32px;
+  height: 16px;
+  margin-right: 4px;
+  border: 1px solid rgba(23, 32, 39, 0.18);
+}
+
+#potree_menu .sp-dd {
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 16px;
+}
+
+/* ---------------------------------------------------------------------------
+   Scene panel: export shortcuts and the object tree
+   --------------------------------------------------------------------------- */
+
+#scene_export {
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+#scene_export a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 8px 0 0;
+  padding: 6px 11px 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--action);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+#scene_export a:hover {
+  border-color: var(--action);
+  background: #e6eefa;
+  text-decoration: none;
+}
+
+/* The export icons carry their own (unreadable at 24px) lettering, so the label
+   is spelled out next to them. */
+#scene_export a[download$=".json"]::after {
+  content: "GeoJSON";
+}
+
+#scene_export a[download$=".dxf"]::after {
+  content: "DXF";
+}
+
+#scene_export a[download$=".json5"]::after {
+  content: "Potree";
+}
+
+#scene_export img.button-icon {
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 !important;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+#scene_export img.button-icon:hover {
+  transform: none;
+}
+
+.jstree-default .jstree-node {
+  margin-bottom: 4px;
+  background: none !important;
+}
+
+/* Potree forces anchors to 100% of their indented parent, which pushes the row
+   highlight past the panel edge. */
+.jstree-default .jstree-anchor {
+  width: auto !important;
+  height: 28px !important;
+  padding-right: 8px;
+  border-radius: 3px;
   color: var(--ink) !important;
+  font-size: 13px;
+  line-height: 28px !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Tree icons — Lucide (ISC) glyphs inlined as data URIs, replacing the washed
+   out jsTree sprite sheet and Potree's own icon set. Node groups have stable
+   ids, and leaf icons are matched on the icon file Potree assigns inline.
+   --------------------------------------------------------------------------- */
+
+#jstree_scene .jstree-icon {
+  background-position: center !important;
+  background-size: 17px 17px !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Expander chevron */
+.jstree-default .jstree-ocl {
+  width: 22px !important;
+  background-image: none !important;
+}
+
+.jstree-default .jstree-closed > .jstree-ocl,
+.jstree-default .jstree-open > .jstree-ocl {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23687483' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E") !important;
+  background-size: 14px 14px !important;
+  transition: transform 150ms ease;
+}
+
+.jstree-default .jstree-open > .jstree-ocl {
+  transform: rotate(90deg);
+}
+
+/* Checkbox */
+#jstree_scene .jstree-anchor > .jstree-checkbox {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23687483' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3C/svg%3E") !important;
+}
+
+#jstree_scene .jstree-anchor.jstree-checked > .jstree-checkbox {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230055cc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E") !important;
+}
+
+#jstree_scene .jstree-anchor.jstree-undetermined > .jstree-checkbox {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230055cc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='M8 12h8'/%3E%3C/svg%3E") !important;
+}
+
+/* Default node icon (folder) */
+#jstree_scene .jstree-themeicon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z'/%3E%3C/svg%3E") !important;
+}
+
+/* Group nodes */
+#pointclouds_anchor > .jstree-themeicon,
+#jstree_scene .jstree-themeicon-custom[style*="cloud.svg"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z'/%3E%3C/svg%3E") !important;
+}
+
+#measurements_anchor > .jstree-themeicon,
+#jstree_scene .jstree-themeicon-custom[style*="distance.svg"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.3 8.7 8.7 21.3a1 1 0 0 1-1.4 0l-4.6-4.6a1 1 0 0 1 0-1.4L15.3 2.7a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 0 1 0 1.4Z'/%3E%3Cpath d='m7.5 10.5 2 2'/%3E%3Cpath d='m10.5 7.5 2 2'/%3E%3Cpath d='m13.5 4.5 2 2'/%3E%3Cpath d='m4.5 13.5 2 2'/%3E%3C/svg%3E") !important;
+}
+
+#annotations_anchor > .jstree-themeicon,
+#jstree_scene .jstree-themeicon-custom[style*="annotation.svg"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/%3E%3C/svg%3E") !important;
+}
+
+#other_anchor > .jstree-themeicon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z'/%3E%3Cpath d='m2 12 8.58 3.91a2 2 0 0 0 1.66 0L22 12'/%3E%3Cpath d='m2 17 8.58 3.91a2 2 0 0 0 1.66 0L22 17'/%3E%3C/svg%3E") !important;
+}
+
+#vectors_anchor > .jstree-themeicon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l19-9-9 19-2-8-8-2z'/%3E%3C/svg%3E") !important;
+}
+
+#images_anchor > .jstree-themeicon,
+#jstree_scene .jstree-themeicon-custom[style*="picture.svg"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2' ry='2'/%3E%3Ccircle cx='9' cy='9' r='2'/%3E%3Cpath d='m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21'/%3E%3C/svg%3E") !important;
+}
+
+/* Measurement leaves */
+#jstree_scene .jstree-themeicon-custom[style*="volume.svg"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z'/%3E%3Cpath d='m3.3 7 8.7 5 8.7-5'/%3E%3Cpath d='M12 22V12'/%3E%3C/svg%3E") !important;
+}
+
+#jstree_scene .jstree-themeicon-custom[style*="point.svg"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E") !important;
+}
+
+#jstree_scene .jstree-themeicon-custom[style*="area.svg"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.83 2.38a2 2 0 0 1 2.34 0l8 5.74a2 2 0 0 1 .73 2.24l-3.04 9.26a2 2 0 0 1-1.9 1.38H6.04a2 2 0 0 1-1.9-1.38L1.1 10.36a2 2 0 0 1 .73-2.24z'/%3E%3C/svg%3E") !important;
+}
+
+#jstree_scene .jstree-themeicon-custom[style*="height.svg"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20'/%3E%3Cpath d='m8 18 4 4 4-4'/%3E%3Cpath d='m8 6 4-4 4 4'/%3E%3C/svg%3E") !important;
+}
+
+#jstree_scene .jstree-themeicon-custom[style*="profile.svg"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-4l-3 9L9 3l-3 9H2'/%3E%3C/svg%3E") !important;
+}
+
+#jstree_scene .jstree-themeicon-custom[style*="camera_animation.svg"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5561' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m22 8-6 4 6 4V8Z'/%3E%3Crect width='14' height='12' x='2' y='6' rx='2' ry='2'/%3E%3C/svg%3E") !important;
 }
 
 .jstree-default .jstree-clicked {
-  border-radius: 2px;
-  background: var(--accent);
-  box-shadow: none;
+  background: var(--accent) !important;
+  box-shadow: none !important;
+  color: var(--ink) !important;
 }
 
 .jstree-default .jstree-hovered {
-  border-radius: 2px;
-  background: #e6eefa;
-  box-shadow: none;
+  background: #e6eefa !important;
+  box-shadow: none !important;
+  color: var(--ink) !important;
 }
+
+.jstree-default .jstree-anchor > .jstree-checkbox {
+  margin-right: 2px;
+}
+
 
 .propertypanel_content {
   color: var(--font-color);
@@ -416,13 +871,31 @@ selectgroup option[selected] {
 }
 
 .potree_menu_toggle {
-  width: 42px;
-  height: 42px;
-  padding: 7px;
-  border: 0;
+  width: 44px;
+  height: 44px;
+  padding: 11px;
+  border: 1px solid #e3d000;
   border-radius: 3px;
   background: var(--accent);
-  box-shadow: 0 5px 18px rgba(23, 32, 39, 0.25);
+  box-shadow: 0 6px 18px rgba(23, 32, 39, 0.26);
+  cursor: pointer;
+  transition: background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.potree_menu_toggle:hover {
+  background: #ffe600;
+  box-shadow: 0 9px 24px rgba(23, 32, 39, 0.32);
+  transform: translateY(-1px);
+}
+
+.potree_menu_toggle:active {
+  box-shadow: 0 4px 12px rgba(23, 32, 39, 0.26);
+  transform: translateY(0);
+}
+
+.potree_menu_toggle:focus-visible {
+  outline: 3px solid rgba(0, 85, 204, 0.55);
+  outline-offset: 2px;
 }
 
 #potree_map_toggle {
@@ -781,8 +1254,8 @@ selectgroup option[selected] {
 }
 
 .map-camera-parameters > div {
-  min-width: 68px;
-  padding: 7px 8px;
+  min-width: 78px;
+  padding: 7px 9px;
   border-left: 1px solid var(--line);
 }
 
@@ -791,19 +1264,19 @@ selectgroup option[selected] {
 }
 
 .map-camera-parameters dt {
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   color: var(--muted);
-  font-size: 7px;
-  font-weight: 850;
-  letter-spacing: 0.09em;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .map-camera-parameters dd {
   margin: 0;
   color: var(--ink);
-  font-size: 9px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -819,7 +1292,7 @@ selectgroup option[selected] {
   border-top: 1px solid var(--line);
   background: var(--surface);
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
 }
@@ -868,8 +1341,8 @@ selectgroup option[selected] {
   border-top: 1px solid var(--line);
   background: var(--surface-muted);
   color: var(--muted);
-  font-size: 10px;
-  line-height: 1.4;
+  font-size: 11px;
+  line-height: 1.45;
 }
 
 .map-canvas .ol-zoom {
@@ -955,9 +1428,9 @@ selectgroup option[selected] {
   }
 
   .potree_menu_toggle {
-    width: 38px;
-    height: 38px;
-    padding: 6px;
+    width: 40px;
+    height: 40px;
+    padding: 9px;
   }
 
   .map-panel {

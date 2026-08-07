@@ -22,9 +22,27 @@ const sidebarWidth = () => Math.min(360, Math.max(0, window.innerWidth - 48));
 const renderArea = $("#potree_render_area");
 const sidebarIsOpen = () => Number.parseFloat(renderArea.css("left")) > 0;
 
+// Lucide panel-left / panel-left-close.
+const svgIcon = (paths) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333332" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`,
+  )}`;
+const SIDEBAR_PANEL = '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>';
+const TOGGLE_ICON = {
+  closed: svgIcon(SIDEBAR_PANEL),
+  open: svgIcon(`${SIDEBAR_PANEL}<path d="m16 15-3-3 3-3"/>`),
+};
+
 function setSidebarOpen(isOpen) {
   renderArea.css("left", isOpen ? `${sidebarWidth()}px` : "0px");
   document.documentElement.classList.toggle("sidebar-open", isOpen);
+
+  const toggle = document.querySelector(".potree_menu_toggle");
+  if (toggle) {
+    toggle.src = isOpen ? TOGGLE_ICON.open : TOGGLE_ICON.closed;
+    toggle.title = isOpen ? "Hide sidebar" : "Show sidebar";
+    toggle.alt = toggle.title;
+  }
 }
 
 viewer.toggleSidebar = () => {
@@ -71,6 +89,17 @@ document.querySelectorAll("#potree_menu > h3").forEach((header, index) => {
   });
 });
 
+// Potree renders the EDL opacity label but never fills in its value, so the row
+// reads "Opacity:" with nothing after it.
+const edlOpacityLabel = document.getElementById("lblEDLOpacity");
+if (edlOpacityLabel) {
+  const syncEdlOpacity = () => {
+    edlOpacityLabel.textContent = viewer.getEDLOpacity().toFixed(2);
+  };
+  syncEdlOpacity();
+  $("#sldEDLOpacity").on("slide slidechange", syncEdlOpacity);
+}
+
 viewer.setLanguage("en");
 viewer.toggleSidebar();
 
@@ -110,6 +139,8 @@ async function loadMainPointCloud() {
   try {
     const event = await Potree.loadPointCloud(POINT_CLOUD_URL, "rawpoints_flat_BE");
     pointCloud = event.pointcloud;
+    // The scene tree labels each node with this name; without it the row is blank.
+    pointCloud.name = "DHMV Flanders";
     pointCloud.position.set(-CENTER.x, -CENTER.y, 0);
     pointCloud.minimumNodePixelSize = 55;
     pointCloud.pointBudget = 5_000_000;
@@ -140,6 +171,7 @@ async function loadTestPointCloud() {
   try {
     const testEvent = await Potree.loadPointCloud(TEST_POINT_CLOUD_URL, "test");
     const testPointCloud = testEvent.pointcloud;
+    testPointCloud.name = "Test tile";
     testPointCloud.position.set(-CENTER.x, -CENTER.y, 0);
     testPointCloud.material.size = 1.2;
     testPointCloud.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
