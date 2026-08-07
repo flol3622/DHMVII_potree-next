@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and runtime state
+*.log
+logs/
+*.pid
+*.pid.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test and tooling output
+coverage/
+dist/
+.nyc_output/
+.cache/
+.parcel-cache/
+.vite/
+*.tsbuildinfo
+
+# Local point-cloud data
+pointclouds/*
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Operating systems
+.DS_Store
+Thumbs.db
+Desktop.ini

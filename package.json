@@ -5,7 +5,16 @@
   "description": "Minimal Potree Next viewer for the DHMV COPC",
   "type": "module",
   "scripts": {
-    "start": "node server.mjs"
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "start": "npm run dev"
   },
-  "license": "BSD-2-CLAUSE"
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "license": "AGPL-3.0-only",
+  "devDependencies": {
+    "vite": "^8.2.1"
+  }
 }

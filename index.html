@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#071013" />
+    <meta
+      name="description"
+      content="Interactive DHMV point-cloud viewer powered by Potree Next"
+    />
+    <title>DHMV · Potree Next</title>
+
+    <link rel="stylesheet" href="/vendor/potree/potree.css" />
+    <link rel="stylesheet" href="/vendor/libs/jquery-ui/jquery-ui.min.css" />
+    <link rel="stylesheet" href="/vendor/libs/openlayers3/ol.css" />
+    <link rel="stylesheet" href="/vendor/libs/spectrum/spectrum.css" />
+    <link rel="stylesheet" href="/vendor/libs/jstree/themes/mixed/style.css" />
+  </head>
+
+  <body>
+    <div class="potree_container">
+      <div id="potree_render_area"></div>
+      <div id="potree_sidebar_container"></div>
+    </div>
+
+    <template id="project-summary-template">
+      <section class="project-summary" aria-label="DHMV stream status">
+        <div class="eyebrow">Potree Next · native COPC</div>
+        <h1>DHMV / Belgium</h1>
+        <div class="subtitle">
+          <span id="status-dot" class="status-dot"></span>
+          <span id="status">Reading COPC header…</span>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric"><strong id="visible-points">—</strong><span>Visible points</span></div>
+          <div class="metric"><strong id="visible-nodes">—</strong><span>Visible nodes</span></div>
+          <div class="metric"><strong id="deepest-level">—</strong><span>Deepest LOD</span></div>
+          <div class="metric"><strong id="active-loads">—</strong><span>Active loads</span></div>
+        </div>
+        <button id="reset-view" class="sidebar-action" type="button">Reset crop view</button>
+      </section>
+    </template>
+
+    <div id="error-card" class="error-card" role="alert">
+      <strong>Potree could not load this COPC</strong>
+      <pre id="error-message"></pre>
+    </div>
+
+    <script src="/vendor/libs/jquery/jquery-3.1.1.min.js"></script>
+    <script src="/vendor/libs/spectrum/spectrum.js"></script>
+    <script src="/vendor/libs/jquery-ui/jquery-ui.min.js"></script>
+    <script src="/vendor/libs/other/BinaryHeap.js"></script>
+    <script src="/vendor/libs/tween/tween.min.js"></script>
+    <script src="/vendor/libs/d3/d3.js"></script>
+    <script src="/vendor/libs/proj4/proj4.js"></script>
+    <script src="/vendor/libs/openlayers3/ol.js"></script>
+    <script src="/vendor/libs/i18next/i18next.js"></script>
+    <script src="/vendor/libs/jstree/jstree.js"></script>
+    <script src="/vendor/libs/copc/index.js"></script>
+    <script src="/vendor/potree/potree.js"></script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
