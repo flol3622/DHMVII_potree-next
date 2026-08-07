@@ -1,0 +1,106 @@
+{
+	"tb": {
+		"navigation_opt": "Navigatie",
+		"rendering_opt": "Weergave",
+		"tools_opt": "Gereedschap",
+		"measurments_opt": "Metingen",
+		"clipping_opt": "Uitsnijden",
+		"annotations_opt": "Annotaties",
+		"materials_opt": "Materialen",
+		"scene_opt": "Scène",
+		"classification_filter_opt": "Classificatiefilter",
+		"filters_opt": "Filters",
+		"parameters_opt": "Overige instellingen",
+		"about_opt": "Over"
+	},
+	"tt": {
+		"angle_measurement": "Hoek meten",
+		"point_measurement": "Punt meten",
+		"distance_measurement": "Afstand meten",
+		"height_measurement": "Hoogte meten",
+		"circle_measurement": "Cirkel meten",
+		"area_measurement": "Oppervlakte meten",
+		"volume_measurement": "Volume meten",
+		"height_profile": "Hoogteprofiel",
+		"annotation": "Annotatie",
+		"clip_volume": "Uitsnede met volume",
+		"clip_polygon": "Uitsnede met polygoon",
+		"screen_clip_box": "Teken een selectiekader. Vereist de orthografische cameramodus!",
+		"clip_plane_x": "Snijvlak op de x-as",
+		"clip_plane_y": "Snijvlak op de y-as",
+		"clip_plane_z": "Snijvlak op de z-as",
+		"remove_all_measurement": "Alle metingen verwijderen",
+		"left_view_control": "Aanzicht links",
+		"right_view_control": "Aanzicht rechts",
+		"front_view_control": "Vooraanzicht",
+		"back_view_control": "Achteraanzicht",
+		"top_view_control": "Bovenaanzicht",
+		"bottom_view_control": "Onderaanzicht",
+		"focus_control": "Volledige omvang",
+		"orbit_control": "Draaien om een punt",
+		"flight_control": "Vrij vliegen",
+		"heli_control": "Helikoptermodus",
+		"earth_control": "Aardemodus",
+		"perspective_camera_control": "Perspectiefcamera",
+		"orthographic_camera_control": "Orthografische camera",
+		"navigation_cube_control": "Navigatiekubus",
+		"remove_all_clipping_volumes": "Alle snijvolumes verwijderen",
+		"compass": "Kompas",
+		"camera_animation": "Camera-animatie"
+	},
+	"appearance": {
+		"nb_max_pts": "Puntenbudget",
+		"point_size": "Puntgrootte",
+		"min_point_size": "Minimumgrootte",
+		"point_opacity": "Dekking",
+		"field_view": "Gezichtsveld",
+		"point_size_type": "Puntschaling",
+		"point_material": "Materialen",
+		"elevation_range": "Hoogtebereik",
+		"extra_range": "Scalair bereik",
+		"point_quality": "Kwaliteit",
+		"point_shape": "Vorm",
+		"edl_radius": "Straal",
+		"edl_strength": "Sterkte",
+		"edl_opacity": "Dekking",
+		"edl_enable": "Inschakelen",
+		"min_node_size": "Min. knoopgrootte",
+		"clip_mode": "Snijmodus",
+		"move_speed": "Snelheid",
+		"skybox": "Lucht",
+		"bottom_lock": "Boven maaiveld blijven",
+		"box": "Kader",
+		"length_unit": "Lengte-eenheid",
+		"freeze": "Beeld vergrendelen",
+		"language": "Taal",
+		"backface_culling": "Achterzijden verbergen"
+	},
+	"measurements": {
+		"clip": "uitsnijden",
+		"show": "volume tonen"
+	},
+	"annotations": {
+		"show3D": "in 3D tonen",
+		"showMap": "op kaart tonen"
+	},
+	"profile": {
+		"nb_points": "Aantal punten",
+		"title": "Hoogteprofiel",
+		"save_las": "LAS opslaan (3D)",
+		"save_ortho": "CSV opslaan (2D)"
+	},
+	"scene": {
+		"camera_position": "Camerapositie",
+		"camera_target": "Cameradoel"
+	},
+	"filters": {
+		"return_number": "Retournummer",
+		"number_of_returns": "Aantal retours",
+		"gps_min": "min",
+		"gps_max": "max",
+		"gps_time": "GPS-tijd"
+	},
+	"settings": {
+		"language": "Taal"
+	}
+}

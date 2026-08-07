@@ -75875,7 +75875,23 @@ ENDSEC
 						<span>Elevation</span>
 					</div>
 
-					<li><span data-i18n="appearance.elevation_range"></span>: <span id="lblHeightRange"></span> <div id="sldHeightRange"></div>	</li>
+					<li class="elevation-range-control">
+						<div class="elevation-range-heading">
+							<span data-i18n="appearance.elevation_range"></span>:
+							<span id="lblHeightRange"></span>
+						</div>
+						<div class="elevation-range-inputs">
+							<label for="numHeightMin">
+								<span>Min</span>
+								<input id="numHeightMin" type="number" min="-20" max="350" step="0.01" inputmode="decimal" aria-describedby="lblHeightRange" />
+							</label>
+							<label for="numHeightMax">
+								<span>Max</span>
+								<input id="numHeightMax" type="number" min="-20" max="350" step="0.01" inputmode="decimal" aria-describedby="lblHeightRange" />
+							</label>
+						</div>
+						<div id="sldHeightRange"></div>
+					</li>
 
 					<li>
 						<selectgroup id="gradient_repeat_option">
@@ -76300,6 +76316,36 @@ ENDSEC
 			}
 
 			{
+				const elevationSliderBounds = [-20, 350];
+				const heightMinInput = panel.find('#numHeightMin');
+				const heightMaxInput = panel.find('#numHeightMax');
+
+				let updateHeightRange;
+				let commitHeightRangeInput = (event) => {
+					let min = Number.parseFloat(heightMinInput.val());
+					let max = Number.parseFloat(heightMaxInput.val());
+
+					if(!Number.isFinite(min) || !Number.isFinite(max)){
+						updateHeightRange();
+						return;
+					}
+
+					min = Math.max(elevationSliderBounds[0], Math.min(min, elevationSliderBounds[1]));
+					max = Math.max(elevationSliderBounds[0], Math.min(max, elevationSliderBounds[1]));
+
+					if(event.currentTarget === heightMinInput[0]){
+						min = Math.min(min, max);
+					}else {
+						max = Math.max(max, min);
+					}
+
+					material.elevationRange = [min, max];
+					updateHeightRange();
+				};
+
+				heightMinInput.on('change', commitHeightRangeInput);
+				heightMaxInput.on('change', commitHeightRangeInput);
+
 				panel.find('#sldRGBGamma').slider({
 					value: material.rgbGamma,
 					min: 0, max: 4, step: 0.01,
@@ -76338,11 +76384,10 @@ ENDSEC
 
 				panel.find('#sldHeightRange').slider({
 					range: true,
-					min: 0, max: 1000, step: 0.01,
-					values: [0, 1000],
+					min: elevationSliderBounds[0], max: elevationSliderBounds[1], step: 0.01,
+					values: material.elevationRange,
 					slide: (event, ui) => {
-						material.heightMin = ui.values[0];
-						material.heightMax = ui.values[1];
+						material.elevationRange = [...ui.values];
 					}
 				});
 
@@ -76424,38 +76469,17 @@ ENDSEC
 						.spectrum('set', `#${material.color.getHexString()}`);
 				});
 
-				let updateHeightRange = function () {
-					
-
-					let aPosition = pointcloud.getAttribute("position");
-
-					let bMin, bMax;
-
-					if(aPosition){
-						// for new format 2.0 and loader that contain precomputed min/max of attributes
-						let min = aPosition.range[0][2];
-						let max = aPosition.range[1][2];
-						let width = max - min;
-
-						bMin = min - 0.2 * width;
-						bMax = max + 0.2 * width;
-					}else {
-						// for format up until exlusive 2.0
-						let box = [pointcloud.pcoGeometry.tightBoundingBox, pointcloud.getBoundingBoxWorld()]
-							.find(v => v !== undefined);
-
-						pointcloud.updateMatrixWorld(true);
-						box = Utils.computeTransformedBoundingBox(box, pointcloud.matrixWorld);
-
-						let bWidth = box.max.z - box.min.z;
-						bMin = box.min.z - 0.2 * bWidth;
-						bMax = box.max.z + 0.2 * bWidth;
-					}
-
+				updateHeightRange = function () {
 					let range = material.elevationRange;
 
 					panel.find('#lblHeightRange').html(`${range[0].toFixed(2)} to ${range[1].toFixed(2)}`);
-					panel.find('#sldHeightRange').slider({min: bMin, max: bMax, values: range});
+					heightMinInput.val(range[0].toFixed(2));
+					heightMaxInput.val(range[1].toFixed(2));
+					panel.find('#sldHeightRange').slider({
+						min: elevationSliderBounds[0],
+						max: elevationSliderBounds[1],
+						values: range,
+					});
 				};
 
 				let updateExtraRange = function () {
@@ -76494,11 +76518,7 @@ ENDSEC
 					panel.find('#lblIntensityRange').html(`${parseInt(range[0])} to ${parseInt(range[1])}`);
 				};
 
-				{
-					updateHeightRange();
-					panel.find(`#sldHeightRange`).slider('option', 'min');
-					panel.find(`#sldHeightRange`).slider('option', 'max');
-				}
+				updateHeightRange();
 
 				{
 					let elGradientRepeat = panel.find("#gradient_repeat_option");
@@ -80443,13 +80463,8 @@ ENDSEC
 			let languages = [
 				["EN", "en"],
 				["FR", "fr"],
-				["DE", "de"],
-				["JP", "jp"],
-				["ES", "es"],
-				["SE", "se"],
-				["ZH", "zh"],
-				["IT", "it"],
-				["CA", "ca"]
+				["NL", "nl"],
+				["DE", "de"]
 			];
 
 			let elLanguages = $('#potree_languages');
@@ -89241,7 +89256,7 @@ ENDSEC
 				i18n.init({
 					lng: 'en',
 					resGetPath: Potree.resourcePath + '/lang/__lng__/__ns__.json',
-					preload: ['en', 'fr', 'de', 'jp', 'se', 'es', 'zh', 'it','ca'],
+					preload: ['en', 'fr', 'nl', 'de'],
 					getAsync: true,
 					debug: false
 				}, function (t) {

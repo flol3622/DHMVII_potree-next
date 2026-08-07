@@ -555,6 +555,38 @@ html:not(.sidebar-open) #potree_sidebar_container {
   cursor: grabbing;
 }
 
+.elevation-range-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#lblHeightRange,
+.elevation-range-inputs input {
+  font-variant-numeric: tabular-nums;
+}
+
+.elevation-range-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+#potree_menu .elevation-range-inputs label {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px;
+  cursor: default;
+}
+
+#potree_menu .elevation-range-inputs input {
+  width: 100%;
+  min-width: 0;
+  text-align: right;
+}
+
 /* Segmented option groups (background, clip task, camera projection, …) */
 /* Potree writes `border-style: solid solid solid none` inline on the first
    option, which leaves the group without a left edge. */
@@ -611,6 +643,7 @@ html:not(.sidebar-open) #potree_sidebar_container {
 
 select,
 input[type="text"],
+input[type="number"],
 input[type="button"] {
   border: 1px solid var(--line);
   border-radius: 3px;
