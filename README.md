@@ -41,6 +41,7 @@ The whole thing is **one file**, streamed straight from a plain web server. No t
 | 🔎 | **Address search** — type a street or a town, land on it. Belgian Lambert 72 handled behind the scenes. |
 | 🌈 | **Elevation, intensity, classification, RGB** — the full Potree material palette, plus eye-dome lighting so the surface actually reads as a surface. |
 | 📏 | **Measure things** — distances, areas, heights, profiles. Potree's standard toolkit, kept intact. |
+| ⬇️ | **Download a clipped volume** — the expandable **Download** menu at the bottom right exports a selected clipping box as uncompressed LAS, at full source detail, entirely in your browser. |
 | 📊 | **Live streaming stats** — visible points, visible nodes, octree depth, in-flight requests. Useful when you want to see *why* it feels fast. |
 | 🗣️ | **Four languages** — English, French, Dutch, German. The Dutch translation is new here; Potree didn't ship one, which is a strange gap for a Flemish dataset. |
 
@@ -111,7 +112,7 @@ To run the full-cloud branch locally, you need **Node.js** `^20.19.0` or `>=22.1
 
 ```bash
 mkdir -p pointclouds
-ln -s /path/to/rawpoints_flat_BE.copc.laz pointclouds/rawpoints_flat_BE.copc.laz
+ln -s /path/to/test.copc.laz pointclouds/test.copc.laz
 npm install && npm run dev
 ```
 
@@ -120,12 +121,35 @@ Open <http://localhost:5173> and you're flying. 🛫
 You can also point at a remote range-enabled host via `.env`:
 
 ```dotenv
-VITE_POINT_CLOUD_URL=https://data.example.org/rawpoints_flat_BE.copc.laz
+VITE_POINT_CLOUD_URL=https://data.example.org/test.copc.laz
 ```
 
 The host must support `GET`, `HEAD`, and single byte ranges. Cross-origin? It also needs to allow the `Range` request header and expose `Accept-Ranges`, `Content-Length`, and `Content-Range` through CORS.
 
 The full dataset is represented on `main` only by a symlink; it never enters the bundle or repository history.
+
+### Downloading a clipped volume
+
+Open **Download** at the bottom right, choose an existing clipping box or click
+**Create clipping box**, and place it on the point cloud. Select the box in the
+viewer to move, rotate or resize it, then click **Download clipped volume (.las)**.
+The hidden whole-Flanders crop is excluded from the box picker.
+
+Export reads every intersecting COPC level, including parent-level points, so the
+result contains all source points inside the selected box regardless of the camera,
+display filters, clipping display mode or point budget. The selected box's transform
+is captured at the start. Other boxes and polygon clips do not affect this export.
+Original coordinates, coordinate reference metadata and all point-record attributes
+(including extra bytes) are preserved. The output is a regular, uncompressed LAS 1.4
+file; COPC indexes and compression metadata are removed and point counts, bounds,
+return counts and metadata offsets are updated.
+
+Decoding and clipping run in a dedicated browser worker with progress and a
+**Cancel export** button. No export service or uploads are needed. Exports are
+limited to 256 MiB to keep browser memory bounded; shrink the box if it exceeds
+that limit. **Save LAS again** remains available if the browser blocks the automatic
+download. `npm test` checks real COPC extraction, attribute preservation, rotated
+boxes, complete hierarchy traversal, metadata and range-request failures.
 
 <details>
 <summary>📦 <b>Building the static site</b></summary>
@@ -230,6 +254,7 @@ AGPL's copyleft applies to *this* work; it does not retroactively relicense thir
 | tween.js | MIT | `libs/tween/LICENSE.txt` |
 | i18next 1.8.0 | MIT © Jan Mühlemann | `libs/i18next/LICENSE` |
 | copc.js | MIT © Connor Manning | `libs/copc/LICENSE` + file banner |
+| laz-perf 0.0.7 (npm, export worker decoder) | Apache-2.0 | `libs/laz-perf/LICENSE` |
 | BinaryHeap | MIT © Marijn Haverbeke | header in `libs/other/BinaryHeap.js` |
 
 MIT requires the full permission text to travel with the code, not just a

@@ -5,6 +5,7 @@
   "description": "Minimal Potree Next viewer for the DHMV COPC",
   "type": "module",
   "scripts": {
+    "test": "node --test tests/*.test.js",
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
@@ -16,5 +17,9 @@
   "license": "AGPL-3.0-only",
   "devDependencies": {
     "vite": "^8.2.1"
+  },
+  "dependencies": {
+    "copc": "0.0.9",
+    "laz-perf": "0.0.7"
   }
 }

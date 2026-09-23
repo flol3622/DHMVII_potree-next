@@ -1,6 +1,6 @@
 # How the DHMV COPC was produced
 
-The viewer streams a single file, `rawpoints_flat_BE.copc.laz`, built from the
+The viewer streams a single file, `test.copc.laz`, built from the
 public **DHMV II** (Digitaal Hoogtemodel Vlaanderen II) LiDAR release. This
 directory holds the scripts that produced it, kept in the repository so the
 dataset behind the viewer is reproducible rather than a black box.
@@ -143,7 +143,7 @@ Requirements are `aria2c`, `tar`, [`uv`](https://docs.astral.sh/uv/) (the
 Python scripts declare their own dependencies inline, so no environment setup
 is needed), and `copc_converter` on `PATH` for stage 2.
 
-The resulting `copc/rawpoints_flat_BE.copc.laz` is what the viewer points at;
+The resulting `copc/test.copc.laz` is what the viewer points at;
 see the main [README](../README.md) for how it is served.
 
 ## Data source and licence

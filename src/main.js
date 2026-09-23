@@ -9,6 +9,7 @@ import {
   POINT_CLOUD_URL,
 } from "./config.js";
 import { initializeMapTab } from "./map.js";
+import { initializeLasExport } from "./las-export.js";
 import "./styles/main.css";
 
 const formatNumber = new Intl.NumberFormat("en", {
@@ -130,6 +131,8 @@ cropVolume.scale.set(CROP.maxX - CROP.minX, CROP.maxY - CROP.minY, 15000);
 cropVolume.clip = true;
 cropVolume.visible = false;
 viewer.scene.addVolume(cropVolume);
+
+initializeLasExport({ viewer, cropVolume, url: POINT_CLOUD_URL });
 
 let pointCloud = null;
 const startedAt = performance.now();

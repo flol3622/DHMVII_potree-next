@@ -20,6 +20,25 @@
   <body>
     <div class="potree_container">
       <div id="potree_render_area">
+        <details id="viewer-download-menu" class="viewer-download-menu">
+          <summary>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5" /></svg>
+            <span>Download</span>
+            <svg class="download-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6" /></svg>
+          </summary>
+          <section class="viewer-download-panel" aria-label="Download clipped volume">
+            <div class="download-heading">Clipped volume <span>LAS</span></div>
+            <p>Highest detail · all source points inside the selected box, regardless of the current view or point budget.</p>
+            <label for="export-volume">Clipping box</label>
+            <select id="export-volume" disabled><option value="">Create a clipping box first</option></select>
+            <button id="export-create-box" class="download-secondary" type="button" disabled>+ Create clipping box</button>
+            <p class="download-note">Keeps source coordinates and attributes. Runs in your browser; exports up to 256 MiB. Box position is captured when you start.</p>
+            <button id="export-las" class="download-primary" type="button" disabled>Download clipped volume (.las)</button>
+            <button id="export-cancel" class="download-secondary" type="button" hidden>Cancel export</button>
+            <p id="export-status" class="download-status" role="status" aria-live="polite">Create or select a clipping box to export.</p>
+            <a id="export-save" class="download-save" hidden>Save LAS again</a>
+          </section>
+        </details>
         <button
           id="map-tab-button"
           class="map-tab-button"

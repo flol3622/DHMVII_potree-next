@@ -4,8 +4,8 @@ import { fileURLToPath } from "node:url";
 import { defineConfig, loadEnv } from "vite";
 
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
-const localPointCloudRoute = "/pointclouds/rawpoints_flat_BE.copc.laz";
-const localPointCloudPath = path.join(projectRoot, "pointclouds", "rawpoints_flat_BE.copc.laz");
+const localPointCloudRoute = "/pointclouds/test.copc.laz";
+const localPointCloudPath = path.join(projectRoot, "pointclouds", "test.copc.laz");
 
 function parseRange(header, size) {
   const match = /^bytes=(\d*)-(\d*)$/.exec(header ?? "");

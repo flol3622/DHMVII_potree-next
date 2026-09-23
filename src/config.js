@@ -1,4 +1,4 @@
-const DEFAULT_POINT_CLOUD_PATH = "pointclouds/rawpoints_flat_BE.copc.laz";
+const DEFAULT_POINT_CLOUD_PATH = "pointclouds/test.copc.laz";
 
 function resolvePointCloudUrl(value) {
   const configuredUrl = value?.trim() || DEFAULT_POINT_CLOUD_PATH;
