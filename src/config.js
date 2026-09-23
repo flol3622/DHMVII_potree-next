@@ -1,4 +1,9 @@
-const DEFAULT_POINT_CLOUD_PATH = "pointclouds/test.copc.laz";
+// Flai's regional overview is a separate COPC, not the full-resolution tile set.
+export const FLAI_OVERVIEW_URL =
+  "https://open-lidar-data.s3.eu-central-1.amazonaws.com/data/BE/EODaS/LiDAR_DHMV_II-2013-2015/overview/overview.copc.laz";
+export const FLAI_TILE_CATALOGUE_URL =
+  "https://api.flai.ai/public/datasets/b729323b-332c-46e7-878d-acac932b1013/pointclouds";
+const DEFAULT_POINT_CLOUD_PATH = FLAI_OVERVIEW_URL;
 
 function resolvePointCloudUrl(value) {
   const configuredUrl = value?.trim() || DEFAULT_POINT_CLOUD_PATH;
@@ -6,7 +11,10 @@ function resolvePointCloudUrl(value) {
 }
 
 export const POINT_CLOUD_URL = resolvePointCloudUrl(import.meta.env.VITE_POINT_CLOUD_URL);
-export const POINT_CLOUD_NAME = "DHMV Flanders";
+export const IS_FLAI_OVERVIEW = POINT_CLOUD_URL === FLAI_OVERVIEW_URL;
+export const POINT_CLOUD_NAME = IS_FLAI_OVERVIEW
+  ? "DHMV II · Flai overview"
+  : "DHMV Flanders";
 export const ELEVATION_RANGE = Object.freeze([-20, 350]);
 
 export const MAP_TILE_URL =

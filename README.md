@@ -18,6 +18,31 @@
 
 </div>
 
+## Public Flai source on this branch
+
+This branch defaults to the publicly hosted **Flai DHMV II overview COPC**.
+Run `npm install` and `npm run dev`; no local point-cloud download is required.
+An existing `VITE_POINT_CLOUD_URL` setting still overrides this default.
+
+- [Overview COPC](https://open-lidar-data.s3.eu-central-1.amazonaws.com/data/BE/EODaS/LiDAR_DHMV_II-2013-2015/overview/overview.copc.laz)
+- [Full-resolution tile catalogue](https://api.flai.ai/public/datasets/b729323b-332c-46e7-878d-acac932b1013/pointclouds)
+- [Flai dataset viewer](https://hub.flai.ai/dataset/b729323b-332c-46e7-878d-acac932b1013)
+
+The overview is **reduced detail**. It is not the project's merged 3.3 TB cloud
+and does not replace the full-resolution tiles. The viewer and clipped LAS exports
+use only the configured COPC. Automatic loading of nearby full-resolution Flai
+tiles is not implemented. The single-file descriptions below refer to the original
+merged-cloud deployment.
+
+The catalogue is paginated (`?page=2`, etc.) and includes each tile's Lambert 72
+(EPSG:31370) bounds. Join `datasource_host`, `/`, and `path` for its direct URL.
+You can set `VITE_POINT_CLOUD_URL` to an individual tile or your own merged COPC;
+the initial camera remains framed around Flanders.
+
+The public overview was checked for HTTP 206 byte-range responses and
+`Access-Control-Allow-Origin: *`. Hosting is provided by Flai; data attribution
+remains **Digitaal Vlaanderen / DHMV II**. Availability depends on that external host.
+
 ## 🌍 What is this?
 
 The Netherlands has had [**ahn2.pointclouds.nl**](http://ahn2.pointclouds.nl/) since 2015 — a web page where anyone can fly through 640 billion LiDAR points of an entire country. No login, no software, no GIS degree. It is still one of the nicest pieces of open-data outreach in the field. 🇳🇱

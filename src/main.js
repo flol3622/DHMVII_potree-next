@@ -4,6 +4,7 @@ import {
   ELEVATION_RANGE,
   GEOCODER_URL,
   INITIAL_VIEW,
+  IS_FLAI_OVERVIEW,
   MAP_TILE_URL,
   POINT_CLOUD_NAME,
   POINT_CLOUD_URL,
@@ -67,6 +68,13 @@ await viewer.loadGUI();
 document.getElementById("sidebar_root").prepend(
   document.getElementById("project-summary-template").content.cloneNode(true),
 );
+
+if (IS_FLAI_OVERVIEW) {
+  document.querySelector(".project-wordmark-copy > span").textContent = "DHMV II · overview hosted by Flai";
+  document.querySelector(".project-summary h1").textContent = "Explore Flanders in LiDAR";
+  document.querySelector(".download-note").textContent =
+    "Exports contain overview points only, not the full-resolution DHMV II tiles. Keeps source coordinates and attributes; up to 256 MiB.";
+}
 
 document.querySelectorAll("#potree_menu > h3").forEach((header, index) => {
   const content = header.nextElementSibling;
