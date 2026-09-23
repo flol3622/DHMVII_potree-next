@@ -4,7 +4,7 @@
 
 ### The DHMV II LiDAR survey of Flanders, streaming in your browser. No install, no download, no desktop GIS.
 
-**78,809** full-resolution COPC tiles + one overview · hosted by **[Flai](https://hub.flai.ai)** on **Amazon S3** · streamed as **one** model
+**78,809** full-resolution COPC tiles + one overview · **[Flai](https://hub.flai.ai)**'s own conversion, hosted on **Amazon S3** · streamed as **one** model
 
 [![License: AGPL v3](https://img.shields.io/badge/code-AGPL--3.0-blue.svg)](LICENSE)
 [![Format: COPC](https://img.shields.io/badge/format-COPC-8a2be2.svg)](https://copc.io/)
@@ -21,9 +21,11 @@
 
 > 🌿 **You are on the `feat/flai-dhmvii-source` branch**, which is what the
 > [live viewer](https://flol3622.github.io/DHMVII_potree-next/) runs. It streams
-> the public COPC copy of DHMV II that [Flai](https://hub.flai.ai) publishes. The
-> [`main`](https://github.com/flol3622/DHMVII_potree-next/tree/main) branch holds
-> the original project: our own single-file conversion of the survey.
+> [Flai](https://hub.flai.ai)'s own COPC conversion of the original DHMV II LAZ
+> tiles, which Flai hosts on Amazon S3. It is **not** this project's merged COPC.
+> The [`main`](https://github.com/flol3622/DHMVII_potree-next/tree/main) branch
+> holds that original project: our own single-file conversion of the survey, which
+> is not publicly hosted yet.
 
 ## 🌍 What is this?
 
@@ -31,9 +33,9 @@ The Netherlands has had [**ahn2.pointclouds.nl**](http://ahn2.pointclouds.nl/) s
 
 Flanders has an equally good national LiDAR survey — **DHMV II**, flown 2013–2015 at ≥ 8 points/m² — and it is genuinely open data. What it lacked was a front door: you could download tiles, but you could not simply *look* at it. 🤷
 
-[Flai](https://hub.flai.ai) now publishes the survey as [COPC](https://copc.io/): **78,809 full-resolution tiles** of 500 × 500 m plus a reduced-detail **overview** of all of Flanders. The files are on Amazon S3, with a public catalogue API to find them. This viewer streams that collection straight from S3 into the browser, with no backend of its own. It does so as **one coherent model**: the overview for the big picture, with full-resolution tiles taking over as you zoom in.
+[Flai](https://hub.flai.ai) has converted the original DHMV II LAZ tiles to [COPC](https://copc.io/) themselves: **78,809 full-resolution tiles** of 500 × 500 m, each named after its source tile, plus a reduced-detail **overview** of all of Flanders. Flai hosts the files on Amazon S3, with a public catalogue API to find them. This viewer streams that collection straight from S3 into the browser, with no backend of its own. It does so as **one coherent model**: the overview for the big picture, with full-resolution tiles taking over as you zoom in.
 
-> 🎓 **On scope.** Every point here is public DHMV II data from Digitaal Vlaanderen, served as COPC by Flai. This repository contributes the viewer: a condensed Potree-Next build, a navigation map, clipped LAS export and the tile-streaming module described below.
+> 🎓 **On scope.** Every point here is public DHMV II data from Digitaal Vlaanderen. The COPC conversion and hosting are Flai's. This repository contributes the viewer: a condensed Potree-Next build, a navigation map, clipped LAS export and the tile-streaming module described below.
 
 ## ✨ What it does
 
@@ -70,12 +72,12 @@ Three moving parts, and only the third one is this repository's own code.
 
 The Flemish government's second national LiDAR survey, flown 2013–2015, ≥ 8 points/m² per strip with ≥ 50 % strip overlap, published as open data by **Digitaal Vlaanderen** through [OpenLidar](https://remotesensing.vlaanderen.be/apps/openlidar/).
 
-### 2️⃣ The hosting — Flai on Amazon S3 ☁️
+### 2️⃣ The COPC conversion and hosting — Flai on Amazon S3 ☁️
 
-[**Flai**](https://hub.flai.ai) publishes DHMV II in its [Lidar Hub](https://hub.flai.ai/dataset/b729323b-332c-46e7-878d-acac932b1013) and hosts the files in the Amazon S3 bucket `open-lidar-data` (region `eu-central-1`):
+[**Flai**](https://hub.flai.ai) converted the original DHMV II LAZ tiles to COPC, publishes them in its [Lidar Hub](https://hub.flai.ai/dataset/b729323b-332c-46e7-878d-acac932b1013), and hosts the files in the Amazon S3 bucket `open-lidar-data` (region `eu-central-1`). This conversion is Flai's own, separate from the merged COPC built on `main`:
 
 - [**Overview COPC**](https://open-lidar-data.s3.eu-central-1.amazonaws.com/data/BE/EODaS/LiDAR_DHMV_II-2013-2015/overview/overview.copc.laz) — reduced detail of the whole survey in one file. Loaded first, and the default `VITE_POINT_CLOUD_URL`.
-- **Full-resolution tiles** — one COPC file per 500 × 500 m tile, for example [`…_FU_103500_155500.copc.laz`](https://open-lidar-data.s3.eu-central-1.amazonaws.com/data/BE/EODaS/LiDAR_DHMV_II-2013-2015/copc/LiDAR_DHMV_2_P3_ATL12338_FU_103500_155500.copc.laz).
+- **Full-resolution tiles** — one COPC file per original DHMV II LAZ tile (500 × 500 m), for example [`…_FU_103500_155500.copc.laz`](https://open-lidar-data.s3.eu-central-1.amazonaws.com/data/BE/EODaS/LiDAR_DHMV_II-2013-2015/copc/LiDAR_DHMV_2_P3_ATL12338_FU_103500_155500.copc.laz).
 - [**Tile catalogue API**](https://api.flai.ai/public/datasets/b729323b-332c-46e7-878d-acac932b1013/pointclouds) — paginated (`?page=2`, 200 tiles per page), with each tile's Lambert 72 (EPSG:31370) bounds. Joining `datasource_host`, `/` and `path` gives a tile's direct URL. The viewer queries it by area.
 
 S3 serves the files with HTTP 206 byte ranges and `Access-Control-Allow-Origin: *`, which is all a COPC client needs. This deployment depends on that external host staying available.
@@ -199,7 +201,7 @@ This project is mostly other people's excellent work, glued together with intent
 | Who | What | Licence |
 | :-- | :-- | :-- |
 | 🏛️ **[Digitaal Vlaanderen](https://remotesensing.vlaanderen.be/apps/openlidar/)** | The DHMV II survey itself — flown, processed, and *released openly*. None of this is possible with closed data. | [Gratis Open Data Licentie Vlaanderen](https://assets.vlaanderen.be/image/upload/v1679331485/GratisopendatalicentieVlaanderenv12_bqxu2t.pdf), attribution required |
-| ☁️ **[Flai](https://hub.flai.ai)** | The COPC tiles, the overview and the catalogue API used here, hosted on Amazon S3. Their Lidar Hub viewer inspired the design of `src/tiled-copc/`. | Service of Flai; see their terms at [hub.flai.ai](https://hub.flai.ai) |
+| ☁️ **[Flai](https://hub.flai.ai)** | Their own COPC conversion of the original DHMV II LAZ tiles, the overview and the catalogue API used here, hosted on Amazon S3. Their Lidar Hub viewer inspired the design of `src/tiled-copc/`. | Service of Flai; see their terms at [hub.flai.ai](https://hub.flai.ai) |
 | 📐 **[Hobu, Inc.](https://copc.io/)** — Andrew Bell, Howard Butler, Connor Manning | The COPC specification. Range requests into plain files, no special server. | Open specification |
 | 🌲 **[Markus Schütz](https://github.com/m-schuetz/Potree-Next)** | Potree and Potree-Next — over a decade of making massive point clouds render in a browser, and the COPC support this viewer is built on. | AGPL-3.0 |
 | 🇳🇱 **[NLeSC / TU Delft](https://github.com/NLeSC/ahn-pointcloud-viewer)** | ahn2.pointclouds.nl, the thing we're trying to match. Proof that this is worth doing. | — |
@@ -267,15 +269,15 @@ tag its text came from. ✅
 
 **The AGPL does not cover the point cloud, and cannot.** DHMV II is the Flemish government's data, released by Digitaal Vlaanderen under the [Gratis Open Data Licentie Vlaanderen](https://assets.vlaanderen.be/image/upload/v1679331485/GratisopendatalicentieVlaanderenv12_bqxu2t.pdf) (the licence Flai's dataset page links to), whose core condition is **attribution to the data owner** on any distribution or publication.
 
-The COPC files this viewer streams are published and hosted by **Flai** on **Amazon S3**. This repository neither copies nor redistributes them; your browser reads them directly from Flai's bucket. So:
+The COPC files this viewer streams are **Flai**'s conversion of the original DHMV II LAZ tiles, published and hosted by Flai on **Amazon S3**. This repository neither copies nor redistributes them; your browser reads them directly from Flai's bucket. So:
 
-- ✅ Use, fly through, screenshot, cite. Attribute **Digitaal Vlaanderen / DHMV II**, and credit **Flai** for the hosted COPC.
+- ✅ Use, fly through, screenshot, cite. Attribute **Digitaal Vlaanderen / DHMV II**, and credit **Flai** for the COPC conversion and hosting.
 - 📋 Check the current terms at the [source](https://remotesensing.vlaanderen.be/apps/openlidar/) before you redistribute a derived point cloud, and Flai's terms at [hub.flai.ai](https://hub.flai.ai) for use of their hosting and API. The sources are the authority, not this README.
 - 🗺️ Map tiles are © OpenStreetMap contributors (ODbL); the attribution stays visible in the map panel, please leave it there.
 
 **Suggested attribution** for anything built on this:
 
-> Point cloud: DHMV II, © Digitaal Vlaanderen, open data (Gratis Open Data Licentie Vlaanderen). COPC hosting: Flai (hub.flai.ai), on Amazon S3. Viewer: Flanders in Points, AGPL-3.0, derived from Potree-Next (Markus Schütz). Format: COPC (Hobu, Inc.).
+> Point cloud: DHMV II, © Digitaal Vlaanderen, open data (Gratis Open Data Licentie Vlaanderen). COPC conversion and hosting: Flai (hub.flai.ai), on Amazon S3. Viewer: Flanders in Points, AGPL-3.0, derived from Potree-Next (Markus Schütz). Format: COPC (Hobu, Inc.).
 
 ## 🔍 Provenance
 

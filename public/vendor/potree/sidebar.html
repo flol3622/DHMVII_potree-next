@@ -172,8 +172,8 @@
 
 				<li class="about-block">
 					<p><b>Flanders in Points</b> streams DHMV&nbsp;II &mdash; the Flemish government&rsquo;s national LiDAR survey, flown 2013&ndash;2015 at &ge;&nbsp;8&nbsp;points/m&sup2; &mdash; straight into this browser tab. No install, no download, no desktop GIS.</p>
-					<p>The survey is read as <b>COPC</b> directly from Amazon&nbsp;S3, where <a href="https://hub.flai.ai" target="_blank" rel="noopener">Flai</a> hosts a reduced-detail overview and 78,809 full-resolution tiles. The viewer shows them as one model and requests only the byte ranges your current view needs. There is no backend of its own.</p>
-					<p class="about-note">A research demonstration built at Ghent University on public open data. Every point here is DHMV&nbsp;II &mdash; the survey is not ours, and neither is the hosting.</p>
+					<p>The survey is read as <b>COPC</b> directly from Amazon&nbsp;S3, where <a href="https://hub.flai.ai" target="_blank" rel="noopener">Flai</a> hosts its own COPC conversion of the original DHMV&nbsp;II LAZ tiles: a reduced-detail overview and 78,809 full-resolution tiles. The viewer shows them as one model and requests only the byte ranges your current view needs. There is no backend of its own.</p>
+					<p class="about-note">A research demonstration built at Ghent University on public open data. Every point here is DHMV&nbsp;II &mdash; the survey is not ours, and neither are this COPC conversion or its hosting.</p>
 				</li>
 
 				<div class="divider"><span>How it works</span></div>
@@ -185,7 +185,7 @@
 					</div>
 					<div class="about-step">
 						<span class="about-step-num">2</span>
-						<span><b><a href="https://hub.flai.ai/dataset/b729323b-332c-46e7-878d-acac932b1013" target="_blank" rel="noopener">Flai on Amazon&nbsp;S3</a></b><br>An overview COPC, 78,809 COPC tiles of 500&nbsp;&times;&nbsp;500&nbsp;m, and a catalogue API.</span>
+						<span><b><a href="https://hub.flai.ai/dataset/b729323b-332c-46e7-878d-acac932b1013" target="_blank" rel="noopener">Flai on Amazon&nbsp;S3</a></b><br>Flai&rsquo;s own COPC conversion of the original LAZ tiles: an overview, 78,809 tiles of 500&nbsp;&times;&nbsp;500&nbsp;m, and a catalogue API.</span>
 					</div>
 					<div class="about-step">
 						<span class="about-step-num">3</span>
@@ -202,7 +202,7 @@
 					</div>
 					<div class="about-credit">
 						<a href="https://hub.flai.ai" target="_blank" rel="noopener">Flai</a>
-						<span>The COPC tiles, overview and catalogue API, hosted on Amazon&nbsp;S3. Their Lidar Hub viewer inspired how tiles are streamed here.</span>
+						<span>Their COPC conversion of the DHMV&nbsp;II LAZ tiles, the overview and the catalogue API, hosted on Amazon&nbsp;S3. Their Lidar Hub viewer inspired how tiles are streamed here.</span>
 					</div>
 					<div class="about-credit">
 						<a href="https://copc.io/" target="_blank" rel="noopener">Hobu, Inc.</a>
@@ -219,9 +219,9 @@
 
 				<li class="about-block">
 					<p><b>The code</b> is <a href="https://github.com/flol3622/DHMVII_potree-next/blob/feat/flai-dhmvii-source/LICENSE" target="_blank" rel="noopener">AGPL-3.0-only</a>, inherited from Potree-Next. Because you are using it over a network, &sect;&nbsp;13 applies and the source of this deployment is public: <a href="https://github.com/flol3622/DHMVII_potree-next/tree/feat/flai-dhmvii-source" target="_blank" rel="noopener">github.com/flol3622/DHMVII_potree-next</a> (branch <code>feat/flai-dhmvii-source</code>).</p>
-					<p><b>The data</b> is not ours to license. DHMV&nbsp;II is Flemish government open data under the <a href="https://assets.vlaanderen.be/image/upload/v1679331485/GratisopendatalicentieVlaanderenv12_bqxu2t.pdf" target="_blank" rel="noopener">Gratis Open Data Licentie Vlaanderen</a>, whose core condition is attribution to the data owner. The hosted COPC files are provided by Flai; see <a href="https://hub.flai.ai" target="_blank" rel="noopener">hub.flai.ai</a> for their terms.</p>
+					<p><b>The data</b> is not ours to license. DHMV&nbsp;II is Flemish government open data under the <a href="https://assets.vlaanderen.be/image/upload/v1679331485/GratisopendatalicentieVlaanderenv12_bqxu2t.pdf" target="_blank" rel="noopener">Gratis Open Data Licentie Vlaanderen</a>, whose core condition is attribution to the data owner. The COPC files are Flai&rsquo;s conversion, hosted by Flai; see <a href="https://hub.flai.ai" target="_blank" rel="noopener">hub.flai.ai</a> for their terms.</p>
 					<p>Use it, fly through it, screenshot it, cite it. Suggested attribution:</p>
-					<p class="about-cite">Point cloud: DHMV&nbsp;II, &copy;&nbsp;Digitaal Vlaanderen, open data (Gratis Open Data Licentie Vlaanderen). COPC hosting: Flai (hub.flai.ai), on Amazon&nbsp;S3. Viewer: Flanders in Points, AGPL-3.0, derived from Potree-Next (Markus Sch&uuml;tz). Format: COPC (Hobu,&nbsp;Inc.).</p>
+					<p class="about-cite">Point cloud: DHMV&nbsp;II, &copy;&nbsp;Digitaal Vlaanderen, open data (Gratis Open Data Licentie Vlaanderen). COPC conversion and hosting: Flai (hub.flai.ai), on Amazon&nbsp;S3. Viewer: Flanders in Points, AGPL-3.0, derived from Potree-Next (Markus Sch&uuml;tz). Format: COPC (Hobu,&nbsp;Inc.).</p>
 				</li>
 
 				<div class="divider"><span>Funding</span></div>
