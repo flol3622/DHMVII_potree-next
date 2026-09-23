@@ -24,10 +24,10 @@
 
 Until the full 3.3 TB COPC described below has a public host, the
 [live viewer](https://flol3622.github.io/DHMVII_potree-next/) runs the
-[`feat/flai-dhmvii-source`](https://github.com/flol3622/DHMVII_potree-next/tree/feat/flai-dhmvii-source) branch. It streams the public COPC copy of
-DHMV II that [Flai](https://hub.flai.ai/dataset/b729323b-332c-46e7-878d-acac932b1013)
-hosts on Amazon S3: a reduced-detail overview plus 78,809 full-resolution
-500 × 500 m tiles. The viewer shows them as one model through a reusable
+[`feat/flai-dhmvii-source`](https://github.com/flol3622/DHMVII_potree-next/tree/feat/flai-dhmvii-source) branch. It streams [Flai](https://hub.flai.ai/dataset/b729323b-332c-46e7-878d-acac932b1013)'s
+own COPC conversion of the original DHMV II LAZ tiles, which Flai hosts on
+Amazon S3: a reduced-detail overview plus 78,809 full-resolution 500 × 500 m
+tiles. It is **not** the COPC built on this branch. The viewer shows them as one model through a reusable
 tiled-COPC module. That branch has its own README covering the setup and the
 attribution to Digitaal Vlaanderen and Flai.
 
@@ -71,7 +71,7 @@ The whole thing is **one file**, streamed straight from a plain web server. No t
 | :-- | :-- |
 | ✅ | **The full-Flanders COPC exists.** 3.3 TB, built, verified, sitting on HPC storage. |
 | ⏳ | **Hosting is the blocker.** Serving 3.3 TB with byte-range support is an infrastructure question, not a code question. Conversations ongoing. |
-| ✅ | **The [live viewer](https://flol3622.github.io/DHMVII_potree-next/) streams Flai-hosted DHMV II** from the [`feat/flai-dhmvii-source`](https://github.com/flol3622/DHMVII_potree-next/tree/feat/flai-dhmvii-source) branch. |
+| ✅ | **The [live viewer](https://flol3622.github.io/DHMVII_potree-next/) streams Flai's own COPC conversion of DHMV II** from the [`feat/flai-dhmvii-source`](https://github.com/flol3622/DHMVII_potree-next/tree/feat/flai-dhmvii-source) branch. |
 | ✅ | **Navigation map + address search** — added so people who aren't point-cloud people can still find their own house. |
 
 **Next up:**
@@ -118,7 +118,7 @@ What lives here is not a fork in the git sense. The upstream tree was reduced to
 
 ## 🚀 Try it
 
-The [live viewer](https://flol3622.github.io/DHMVII_potree-next/) runs the [`feat/flai-dhmvii-source`](https://github.com/flol3622/DHMVII_potree-next/tree/feat/flai-dhmvii-source) branch, which streams Flai-hosted COPC tiles from Amazon S3 instead of this branch's single file.
+The [live viewer](https://flol3622.github.io/DHMVII_potree-next/) runs the [`feat/flai-dhmvii-source`](https://github.com/flol3622/DHMVII_potree-next/tree/feat/flai-dhmvii-source) branch, which streams Flai's own COPC conversion of the DHMV II LAZ tiles from Amazon S3, not this branch's single file.
 
 To run the full-cloud branch locally, you need **Node.js** `^20.19.0` or `>=22.12.0`, npm, and access to the full COPC:
 
