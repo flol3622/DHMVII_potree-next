@@ -32,8 +32,10 @@ The overview is **reduced detail**. It is not the project's merged 3.3 TB cloud
 and does not replace the full-resolution tiles. Nearby full-resolution Flai tiles
 load automatically when the camera is within
 3 km of its target. Up to 32 nearest tiles are active, with finer octree refinement
-than the overview. The overview is hidden once these tiles load; zoom out to
-restore regional coverage. Rendering remains subject to the viewer point budget.
+than the overview. Up to 4 tiles load at once, starting with the nearest. While
+they load, the overview is drawn as thin background points so it does not cover
+them. It is hidden once every tile in range has loaded. Zoom out to restore
+regional coverage. Rendering remains subject to the viewer point budget.
 Clipped LAS exports still use the overview only, as labelled in the download menu. The single-file descriptions below refer to the original
 merged-cloud deployment.
 
