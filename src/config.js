@@ -13,7 +13,7 @@ function resolvePointCloudUrl(value) {
 export const POINT_CLOUD_URL = resolvePointCloudUrl(import.meta.env.VITE_POINT_CLOUD_URL);
 export const IS_FLAI_OVERVIEW = POINT_CLOUD_URL === FLAI_OVERVIEW_URL;
 export const POINT_CLOUD_NAME = IS_FLAI_OVERVIEW
-  ? "DHMV II · Flai overview"
+  ? "DHMV II · Flai"
   : "DHMV Flanders";
 export const ELEVATION_RANGE = Object.freeze([-20, 350]);
 

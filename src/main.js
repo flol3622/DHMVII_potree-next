@@ -198,7 +198,8 @@ function updateMetrics() {
   document.getElementById("visible-points").textContent = formatNumber.format(visiblePoints);
   document.getElementById("visible-nodes").textContent = clouds.reduce((sum, cloud) => sum + (cloud.numVisibleNodes || 0), 0);
   const deepestLevel =
-    clouds.reduce((max, cloud) => (cloud.visibleNodes || []).reduce((depth, node) => Math.max(depth, node.getLevel()), max), 0);
+    clouds.reduce((max, cloud) => (cloud.visibleNodes || []).reduce(
+      (depth, node) => Math.max(depth, node.getLevel() + (cloud.levelOffset || 0)), max), 0);
   document.getElementById("deepest-level").textContent = deepestLevel;
   document.getElementById("active-loads").textContent = Potree.numNodesLoading;
   requestAnimationFrame(updateMetrics);

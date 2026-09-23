@@ -61417,7 +61417,20 @@ void main() {
 			camObjPositions.push(camObjPos);
 
 			if (pointcloud.visible && pointcloud.root !== null) {
-				priorityQueue.push({pointcloud: i, node: pointcloud.root, weight: Number.MAX_VALUE});
+				// Local patch: a cloud flagged `isSubtree` is a branch of a larger model,
+				// so its root takes the same screen-size LOD test and priority as a child node.
+				let weight = Number.MAX_VALUE;
+				if (pointcloud.isSubtree && camera.isPerspectiveCamera) {
+					let sphere = pointcloud.root.getBoundingSphere();
+					let distance = sphere.center.distanceTo(camObjPos);
+					let slope = Math.tan((camera.fov * Math.PI) / 180 / 2);
+					let screenPixelRadius = sphere.radius * (0.5 * renderer.domElement.clientHeight) / (slope * distance);
+					weight = distance < sphere.radius ? Number.MAX_VALUE : screenPixelRadius;
+					if (screenPixelRadius < pointcloud.minimumNodePixelSize) weight = 0;
+				}
+				if (weight > 0) {
+					priorityQueue.push({pointcloud: i, node: pointcloud.root, weight: weight});
+				}
 			}
 
 			// hide all previously visible nodes
@@ -61520,7 +61533,8 @@ void main() {
 			visible = visible && !(numVisiblePoints + node.getNumPoints() > Potree.pointBudget);
 			visible = visible && !(numVisiblePointsInPointclouds.get(pointcloud) + node.getNumPoints() > pointcloud.pointBudget);
 			visible = visible && level < maxLevel;
-			visible = visible || node.getLevel() <= 2;
+			// Local patch: subtrees get no always-visible top levels (see isSubtree above).
+			visible = visible || (node.getLevel() <= 2 && !pointcloud.isSubtree);
 
 			let clipBoxes = pointcloud.material.clipBoxes;
 			if(true && clipBoxes.length > 0){

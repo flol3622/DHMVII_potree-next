@@ -29,13 +29,16 @@ An existing `VITE_POINT_CLOUD_URL` setting still overrides this default.
 - [Flai dataset viewer](https://hub.flai.ai/dataset/b729323b-332c-46e7-878d-acac932b1013)
 
 The overview is **reduced detail**. It is not the project's merged 3.3 TB cloud
-and does not replace the full-resolution tiles. Nearby full-resolution Flai tiles
-load automatically when the camera is within
-3 km of its target. Up to 32 nearest tiles are active, with finer octree refinement
-than the overview. Up to 4 tiles load at once, starting with the nearest. While
-they load, the overview is drawn as thin background points so it does not cover
-them. It is hidden once every tile in range has loaded. Zoom out to restore
-regional coverage. Rendering remains subject to the viewer point budget.
+and does not replace the full-resolution tiles. The viewer treats the overview
+and Flai's 500 m tiles as one octree. The overview supplies levels 0–8, and each
+tile is a subtree from level 9 down, since an overview level-9 node is about the
+size of a tile. A small patch in `public/vendor/potree/potree.js` (`isSubtree`)
+gives each tile root the same screen-size test, priority and shared point budget
+as any other node. Tiles therefore refine and fade with the rest of the model,
+not all at once. The tile catalogue is queried in cached 4 km cells. Loaded tiles
+stay cached (up to 256) and are not unloaded on small moves. Tiles take the
+overview's material settings and share its single scene-tree entry. If the
+catalogue cannot be read, the overview falls back to its own deeper levels.
 Clipped LAS exports still use the overview only, as labelled in the download menu. The single-file descriptions below refer to the original
 merged-cloud deployment.
 
