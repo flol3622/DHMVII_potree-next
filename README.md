@@ -29,9 +29,12 @@ An existing `VITE_POINT_CLOUD_URL` setting still overrides this default.
 - [Flai dataset viewer](https://hub.flai.ai/dataset/b729323b-332c-46e7-878d-acac932b1013)
 
 The overview is **reduced detail**. It is not the project's merged 3.3 TB cloud
-and does not replace the full-resolution tiles. The viewer and clipped LAS exports
-use only the configured COPC. Automatic loading of nearby full-resolution Flai
-tiles is not implemented. The single-file descriptions below refer to the original
+and does not replace the full-resolution tiles. Nearby full-resolution Flai tiles
+load automatically when the camera is within
+3 km of its target. Up to 32 nearest tiles are active, with finer octree refinement
+than the overview. The overview is hidden once these tiles load; zoom out to
+restore regional coverage. Rendering remains subject to the viewer point budget.
+Clipped LAS exports still use the overview only, as labelled in the download menu. The single-file descriptions below refer to the original
 merged-cloud deployment.
 
 The catalogue is paginated (`?page=2`, etc.) and includes each tile's Lambert 72

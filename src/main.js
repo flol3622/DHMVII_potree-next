@@ -5,10 +5,12 @@ import {
   GEOCODER_URL,
   INITIAL_VIEW,
   IS_FLAI_OVERVIEW,
+  FLAI_TILE_CATALOGUE_URL,
   MAP_TILE_URL,
   POINT_CLOUD_NAME,
   POINT_CLOUD_URL,
 } from "./config.js";
+import { initializeFlaiTiles } from "./flai-tiles.js";
 import { initializeMapTab } from "./map.js";
 import { initializeLasExport } from "./las-export.js";
 import "./styles/main.css";
@@ -70,7 +72,7 @@ document.getElementById("sidebar_root").prepend(
 );
 
 if (IS_FLAI_OVERVIEW) {
-  document.querySelector(".project-wordmark-copy > span").textContent = "DHMV II · overview hosted by Flai";
+  document.querySelector(".project-wordmark-copy > span").textContent = "DHMV II · tiles hosted by Flai";
   document.querySelector(".project-summary h1").textContent = "Explore Flanders in LiDAR";
   document.querySelector(".download-note").textContent =
     "Exports contain overview points only, not the full-resolution DHMV II tiles. Keeps source coordinates and attributes; up to 256 MiB.";
@@ -145,22 +147,27 @@ initializeLasExport({ viewer, cropVolume, url: POINT_CLOUD_URL });
 let pointCloud = null;
 const startedAt = performance.now();
 
-async function loadPointCloud() {
-  try {
-    const event = await Potree.loadPointCloud(POINT_CLOUD_URL, "rawpoints_flat_BE");
-    pointCloud = event.pointcloud;
+function configurePointCloud(cloud, name) {
     // The scene tree labels each node with this name; without it the row is blank.
-    pointCloud.name = POINT_CLOUD_NAME;
-    pointCloud.position.set(-CENTER.x, -CENTER.y, 0);
-    pointCloud.minimumNodePixelSize = 55;
-    pointCloud.pointBudget = 5_000_000;
+    cloud.name = name;
+    cloud.position.set(-CENTER.x, -CENTER.y, 0);
+    cloud.minimumNodePixelSize = 55;
+    cloud.pointBudget = 5_000_000;
 
-    const material = pointCloud.material;
+    const material = cloud.material;
     material.size = 1.2;
     material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
     material.shape = Potree.PointShape.CIRCLE;
     material.activeAttributeName = "elevation";
     material.elevationRange = ELEVATION_RANGE;
+
+}
+
+async function loadPointCloud() {
+  try {
+    const event = await Potree.loadPointCloud(POINT_CLOUD_URL, "rawpoints_flat_BE");
+    pointCloud = event.pointcloud;
+    configurePointCloud(pointCloud, POINT_CLOUD_NAME);
 
     viewer.scene.addPointCloud(pointCloud);
     const cropDiagonal = Math.hypot(CROP.maxX - CROP.minX, CROP.maxY - CROP.minY);
@@ -168,6 +175,10 @@ async function loadPointCloud() {
     resetView();
     status.textContent = `Streaming COPC · header ${(performance.now() - startedAt).toFixed(0)} ms`;
     statusDot.classList.add("ready");
+    if (IS_FLAI_OVERVIEW) initializeFlaiTiles({
+      viewer, overview: pointCloud, center: CENTER, endpoint: FLAI_TILE_CATALOGUE_URL,
+      configure: configurePointCloud, status,
+    });
   } catch (error) {
     console.error(error);
     status.textContent = "Load failed";
@@ -182,11 +193,12 @@ loadPointCloud();
 document.getElementById("reset-view").addEventListener("click", () => resetView(450));
 
 function updateMetrics() {
-  const visiblePoints = Math.max(0, pointCloud?.numVisiblePoints || 0);
+  const clouds = viewer.scene.pointclouds.filter((cloud) => cloud.visible);
+  const visiblePoints = clouds.reduce((sum, cloud) => sum + (cloud.numVisiblePoints || 0), 0);
   document.getElementById("visible-points").textContent = formatNumber.format(visiblePoints);
-  document.getElementById("visible-nodes").textContent = pointCloud?.numVisibleNodes ?? 0;
+  document.getElementById("visible-nodes").textContent = clouds.reduce((sum, cloud) => sum + (cloud.numVisibleNodes || 0), 0);
   const deepestLevel =
-    pointCloud?.visibleNodes?.reduce((depth, node) => Math.max(depth, node.getLevel()), 0) ?? 0;
+    clouds.reduce((max, cloud) => (cloud.visibleNodes || []).reduce((depth, node) => Math.max(depth, node.getLevel()), max), 0);
   document.getElementById("deepest-level").textContent = deepestLevel;
   document.getElementById("active-loads").textContent = Potree.numNodesLoading;
   requestAnimationFrame(updateMetrics);
