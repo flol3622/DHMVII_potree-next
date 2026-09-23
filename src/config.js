@@ -1,8 +1,8 @@
 // Flai's regional overview is a separate COPC, not the full-resolution tile set.
 export const FLAI_OVERVIEW_URL =
   "https://open-lidar-data.s3.eu-central-1.amazonaws.com/data/BE/EODaS/LiDAR_DHMV_II-2013-2015/overview/overview.copc.laz";
-export const FLAI_TILE_CATALOGUE_URL =
-  "https://api.flai.ai/public/datasets/b729323b-332c-46e7-878d-acac932b1013/pointclouds";
+// Flai dataset whose full-resolution tiles extend the overview (EPSG:31370 tiles).
+export const FLAI_DATASET_ID = "b729323b-332c-46e7-878d-acac932b1013";
 const DEFAULT_POINT_CLOUD_PATH = FLAI_OVERVIEW_URL;
 
 function resolvePointCloudUrl(value) {

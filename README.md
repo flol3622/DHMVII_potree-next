@@ -29,16 +29,42 @@ An existing `VITE_POINT_CLOUD_URL` setting still overrides this default.
 - [Flai dataset viewer](https://hub.flai.ai/dataset/b729323b-332c-46e7-878d-acac932b1013)
 
 The overview is **reduced detail**. It is not the project's merged 3.3 TB cloud
-and does not replace the full-resolution tiles. The viewer treats the overview
-and Flai's 500 m tiles as one octree. The overview supplies levels 0–8, and each
-tile is a subtree from level 9 down, since an overview level-9 node is about the
-size of a tile. A small patch in `public/vendor/potree/potree.js` (`isSubtree`)
-gives each tile root the same screen-size test, priority and shared point budget
-as any other node. Tiles therefore refine and fade with the rest of the model,
-not all at once. The tile catalogue is queried in cached 4 km cells. Loaded tiles
-stay cached (up to 256) and are not unloaded on small moves. Tiles take the
-overview's material settings and share its single scene-tree entry. If the
-catalogue cannot be read, the overview falls back to its own deeper levels.
+and does not replace the full-resolution tiles. The viewer extends it with them
+through `src/tiled-copc/`, a module for any dataset made of an overview COPC plus
+a catalogue of COPC tiles.
+
+```js
+import { createTiledCopc, flaiCatalogue, staticCatalogue } from "./tiled-copc/index.js";
+
+createTiledCopc({
+  viewer,
+  overview, // A loaded Potree COPC point cloud.
+  catalogue: flaiCatalogue({ datasetId, crs: "EPSG:31370" }),
+  // or: staticCatalogue([{ url, extent: [minX, minY, minZ, maxX, maxY, maxZ] }, …])
+  onStatus: ({ wanted, loaded, drawing, failed }) => {},
+});
+```
+
+Its design follows [Flai's Lidar Hub viewer](https://hub.flai.ai), which builds a
+quadtree over tile footprints and hides overview points where a loaded tile
+covers them. This module adds the following:
+
+- **One octree:** each tile is a subtree of the overview. A small patch in
+  `public/vendor/potree/potree.js` (`isSubtree`) gives tile roots the same
+  screen-size test, priority and shared point budget as child nodes. Tiles
+  therefore refine and fade with the model instead of forming a fixed set of the
+  nearest tiles.
+- **Overview replacement:** the overview's shader discards its points inside
+  tiles that are drawing (`material.maskBoxes`, a fixed 64-box array that avoids
+  recompiles). Its traversal also skips nodes that such tiles fully replace
+  (`skipNode`), so hidden points do not use the point budget. Elsewhere the
+  overview keeps all of its levels.
+- **Streaming:** the catalogue is cached per cell (4 km for Flai). Tiles the point
+  budget would cut are not fetched, and up to 256 tiles stay cached. Catalogue
+  requests back off for 5 s after a failure.
+- **Single model:** tiles mirror the overview's material settings and share its
+  single scene-tree entry.
+
 Clipped LAS exports still use the overview only, as labelled in the download menu. The single-file descriptions below refer to the original
 merged-cloud deployment.
 

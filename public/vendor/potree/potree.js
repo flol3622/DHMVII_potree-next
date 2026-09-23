@@ -57546,6 +57546,13 @@ uniform int clipMethod;
 	uniform mat4 clipBoxes[num_clipboxes];
 #endif
 
+// Local patch: world-space XY rectangles (minX, minY, maxX, maxY) whose points
+// are hidden because another cloud covers them (material.maskBoxes).
+#if defined(num_mask_boxes) && num_mask_boxes > 0
+	uniform vec4 uMaskBoxes[num_mask_boxes];
+	uniform int uMaskBoxCount;
+#endif
+
 #if defined(num_clipspheres) && num_clipspheres > 0
 	uniform mat4 uClipSpheres[num_clipspheres];
 #endif
@@ -58250,6 +58257,20 @@ void doClipping(){
 			return;
 		}
 	}
+
+	#if defined(num_mask_boxes) && num_mask_boxes > 0
+	{
+		vec2 p = (modelMatrix * vec4(position, 1.0)).xy;
+		for(int i = 0; i < num_mask_boxes; i++){
+			if(i >= uMaskBoxCount) break;
+			vec4 b = uMaskBoxes[i];
+			if(p.x >= b.x && p.y >= b.y && p.x <= b.z && p.y <= b.w){
+				gl_Position = vec4(100.0, 100.0, 100.0, 0.0);
+				return;
+			}
+		}
+	}
+	#endif
 
 	#if defined(clip_return_number_enabled)
 	{ // return number filter
@@ -61704,6 +61725,11 @@ void main() {
 			for (let i = 0; i < children.length; i++) {
 				let child = children[i];
 
+				// Local patch: lets a cloud prune nodes that another cloud replaces.
+				if (pointcloud.skipNode && pointcloud.skipNode(child)) {
+					continue;
+				}
+
 				let weight = 0; 
 				if(camera.isPerspectiveCamera){
 					let sphere = child.getBoundingSphere();
@@ -63449,6 +63475,8 @@ void main() {
 						`#define num_clipboxes ${numClipBoxes}`,
 						`#define num_clipspheres ${numClipSpheres}`,
 						`#define num_clippolygons ${numClipPolygons}`,
+						// Local patch: fixed size, so changing masks never recompiles the shader.
+						`#define num_mask_boxes ${material.maskBoxes ? 64 : 0}`,
 					];
 
 
@@ -63603,6 +63631,13 @@ void main() {
 
 					const lClipBoxes = shader.uniformLocations["clipBoxes[0]"];
 					gl.uniformMatrix4fv(lClipBoxes, false, material.uniforms.clipBoxes.value);
+				}
+
+				if (material.maskBoxes) { // Local patch, see uMaskBoxes.
+					const boxes = new Float32Array(64 * 4);
+					boxes.set(material.maskBoxes.slice(0, 64 * 4));
+					gl.uniform4fv(shader.uniformLocations["uMaskBoxes[0]"], boxes);
+					shader.setUniform1i("uMaskBoxCount", Math.min(64, material.maskBoxes.length / 4));
 				}
 
 				// TODO CLIPSPHERES
