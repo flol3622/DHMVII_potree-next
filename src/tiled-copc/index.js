@@ -11,7 +11,7 @@
 import { Quadtree } from './quadtree.js';
 import { cellsNear, cornersCovered, screenRadius, sphereInView, syncMaterial, tileSphere } from './lod.js';
 
-export { flaiCatalogue, staticCatalogue } from './catalogues.js';
+export { cellIndexCatalogue, flaiCatalogue, staticCatalogue } from './catalogues.js';
 
 const MASK_CAPACITY = 64; // Matches num_mask_boxes in the Potree patch.
 

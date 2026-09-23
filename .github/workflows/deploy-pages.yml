@@ -1,7 +1,7 @@
 name: Deploy Flai-hosted viewer to GitHub Pages
 
 # The live site is this branch. Point clouds stream from Flai's Amazon S3 bucket,
-# so the artifact is only the static viewer.
+# so the artifact is the static viewer plus a small tile index.
 on:
   push:
     branches: [feat/flai-dhmvii-source]
@@ -39,6 +39,12 @@ jobs:
         run: npm run build
         env:
           VITE_BASE_PATH: /DHMVII_potree-next/
+          VITE_TILE_INDEX_URL: tile-index/
+
+      # Flai's catalogue API does not allow the github.io origin (CORS), so a
+      # static copy of it is published with the site on every deploy.
+      - name: Build the tile index from Flai's catalogue
+        run: node scripts/build-tile-index.mjs dist/tile-index
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

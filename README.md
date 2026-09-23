@@ -78,7 +78,9 @@ The Flemish government's second national LiDAR survey, flown 2013–2015, ≥ 8 
 
 - [**Overview COPC**](https://open-lidar-data.s3.eu-central-1.amazonaws.com/data/BE/EODaS/LiDAR_DHMV_II-2013-2015/overview/overview.copc.laz) — reduced detail of the whole survey in one file. Loaded first, and the default `VITE_POINT_CLOUD_URL`.
 - **Full-resolution tiles** — one COPC file per original DHMV II LAZ tile (500 × 500 m), for example [`…_FU_103500_155500.copc.laz`](https://open-lidar-data.s3.eu-central-1.amazonaws.com/data/BE/EODaS/LiDAR_DHMV_II-2013-2015/copc/LiDAR_DHMV_2_P3_ATL12338_FU_103500_155500.copc.laz).
-- [**Tile catalogue API**](https://api.flai.ai/public/datasets/b729323b-332c-46e7-878d-acac932b1013/pointclouds) — paginated (`?page=2`, 200 tiles per page), with each tile's Lambert 72 (EPSG:31370) bounds. Joining `datasource_host`, `/` and `path` gives a tile's direct URL. The viewer queries it by area.
+- [**Tile catalogue API**](https://api.flai.ai/public/datasets/b729323b-332c-46e7-878d-acac932b1013/pointclouds) — paginated (`?page=2`, 200 tiles per page), with each tile's Lambert 72 (EPSG:31370) bounds. Joining `datasource_host`, `/` and `path` gives a tile's direct URL. Locally, the viewer queries it by area.
+
+The API's CORS policy only admits some origins (such as `localhost` and `hub.flai.ai`), not `github.io`. So on each deploy the Pages workflow runs [`scripts/build-tile-index.mjs`](scripts/build-tile-index.mjs), which reads the full catalogue server-side and publishes it with the site as small per-4 km-cell JSON files (`tile-index/`, about 1,240 files). The live viewer reads that copy through `cellIndexCatalogue`. The tiles themselves still stream directly from Flai's S3 bucket.
 
 S3 serves the files with HTTP 206 byte ranges and `Access-Control-Allow-Origin: *`, which is all a COPC client needs. This deployment depends on that external host staying available.
 
@@ -101,6 +103,7 @@ createTiledCopc({
   viewer,
   overview, // A loaded Potree COPC point cloud.
   catalogue: flaiCatalogue({ datasetId, crs: "EPSG:31370" }),
+  // or: cellIndexCatalogue({ url: "tile-index/" }) — a static copy, see scripts/build-tile-index.mjs
   // or: staticCatalogue([{ url, extent: [minX, minY, minZ, maxX, maxY, maxZ] }, …])
   onStatus: ({ wanted, loaded, drawing, failed }) => {},
 });
@@ -115,7 +118,7 @@ Its design follows [Flai's Lidar Hub viewer](https://hub.flai.ai), which builds 
 
 ## 🚀 Try it
 
-The [live viewer](https://flol3622.github.io/DHMVII_potree-next/) is this branch, built by [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) on every push.
+The [live viewer](https://flol3622.github.io/DHMVII_potree-next/) is this branch, built by [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) on every push. The workflow also rebuilds the tile index from Flai's catalogue, so new tiles appear with the next deploy.
 
 To run it locally, you need **Node.js** `^20.19.0` or `>=22.12.0` and npm. No point-cloud download is required:
 
@@ -171,7 +174,7 @@ tile-streaming helpers.
 npm run build && npm run preview
 ```
 
-Output lands in `dist/`, and that directory is the entire website — the point clouds stay on Amazon S3.
+Output lands in `dist/`, and that directory is the entire website — the point clouds stay on Amazon S3. To host it on an origin Flai's API does not allow, also run `node scripts/build-tile-index.mjs dist/tile-index` and build with `VITE_TILE_INDEX_URL=tile-index/`.
 
 `VITE_BASE_PATH=./` keeps the bundle portable between a domain root and a subdirectory; the Pages workflow sets `/DHMVII_potree-next/`. See [.env.example](.env.example).
 
@@ -186,6 +189,7 @@ Output lands in `dist/`, and that directory is the entire website — the point 
 │   └── tiled-copc/       # overview + tile catalogue streaming as one model
 ├── public/vendor/        # retained Potree runtime (with local patches) + browser libraries
 ├── pointclouds/          # small local test COPC
+├── scripts/              # build-tile-index.mjs: static copy of Flai's tile catalogue
 ├── tests/                # node:test suites and fixtures
 ├── docs/screenshots/     # images used by this README
 ├── .github/workflows/    # GitHub Pages deployment of this branch
@@ -201,7 +205,7 @@ This project is mostly other people's excellent work, glued together with intent
 | Who | What | Licence |
 | :-- | :-- | :-- |
 | 🏛️ **[Digitaal Vlaanderen](https://remotesensing.vlaanderen.be/apps/openlidar/)** | The DHMV II survey itself — flown, processed, and *released openly*. None of this is possible with closed data. | [Gratis Open Data Licentie Vlaanderen](https://assets.vlaanderen.be/image/upload/v1679331485/GratisopendatalicentieVlaanderenv12_bqxu2t.pdf), attribution required |
-| ☁️ **[Flai](https://hub.flai.ai)** | Their own COPC conversion of the original DHMV II LAZ tiles, the overview and the catalogue API used here, hosted on Amazon S3. Their Lidar Hub viewer inspired the design of `src/tiled-copc/`. | Service of Flai; see their terms at [hub.flai.ai](https://hub.flai.ai) |
+| ☁️ **[Flai](https://hub.flai.ai)** | Their own COPC conversion of the original DHMV II LAZ tiles, the overview and the catalogue API used here (the live site publishes a static copy of that catalogue), hosted on Amazon S3. Their Lidar Hub viewer inspired the design of `src/tiled-copc/`. | Service of Flai; see their terms at [hub.flai.ai](https://hub.flai.ai) |
 | 📐 **[Hobu, Inc.](https://copc.io/)** — Andrew Bell, Howard Butler, Connor Manning | The COPC specification. Range requests into plain files, no special server. | Open specification |
 | 🌲 **[Markus Schütz](https://github.com/m-schuetz/Potree-Next)** | Potree and Potree-Next — over a decade of making massive point clouds render in a browser, and the COPC support this viewer is built on. | AGPL-3.0 |
 | 🇳🇱 **[NLeSC / TU Delft](https://github.com/NLeSC/ahn-pointcloud-viewer)** | ahn2.pointclouds.nl, the thing we're trying to match. Proof that this is worth doing. | — |
@@ -269,7 +273,7 @@ tag its text came from. ✅
 
 **The AGPL does not cover the point cloud, and cannot.** DHMV II is the Flemish government's data, released by Digitaal Vlaanderen under the [Gratis Open Data Licentie Vlaanderen](https://assets.vlaanderen.be/image/upload/v1679331485/GratisopendatalicentieVlaanderenv12_bqxu2t.pdf) (the licence Flai's dataset page links to), whose core condition is **attribution to the data owner** on any distribution or publication.
 
-The COPC files this viewer streams are **Flai**'s conversion of the original DHMV II LAZ tiles, published and hosted by Flai on **Amazon S3**. This repository neither copies nor redistributes them; your browser reads them directly from Flai's bucket. So:
+The COPC files this viewer streams are **Flai**'s conversion of the original DHMV II LAZ tiles, published and hosted by Flai on **Amazon S3**. This repository neither copies nor redistributes them; your browser reads them directly from Flai's bucket. The live site does republish Flai's tile catalogue (file paths and extents) as a static index, because the API's CORS policy does not admit `github.io`. So:
 
 - ✅ Use, fly through, screenshot, cite. Attribute **Digitaal Vlaanderen / DHMV II**, and credit **Flai** for the COPC conversion and hosting.
 - 📋 Check the current terms at the [source](https://remotesensing.vlaanderen.be/apps/openlidar/) before you redistribute a derived point cloud, and Flai's terms at [hub.flai.ai](https://hub.flai.ai) for use of their hosting and API. The sources are the authority, not this README.

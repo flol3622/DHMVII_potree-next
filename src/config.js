@@ -3,6 +3,11 @@ export const FLAI_OVERVIEW_URL =
   "https://open-lidar-data.s3.eu-central-1.amazonaws.com/data/BE/EODaS/LiDAR_DHMV_II-2013-2015/overview/overview.copc.laz";
 // Flai dataset whose full-resolution tiles extend the overview (EPSG:31370 tiles).
 export const FLAI_DATASET_ID = "b729323b-332c-46e7-878d-acac932b1013";
+// Static tile index built by scripts/build-tile-index.mjs. Leave unset to query
+// Flai's API live, which its CORS policy allows only from some origins (e.g. localhost).
+export const TILE_INDEX_URL = import.meta.env.VITE_TILE_INDEX_URL?.trim()
+  ? new URL(import.meta.env.VITE_TILE_INDEX_URL.trim(), document.baseURI).href
+  : null;
 const DEFAULT_POINT_CLOUD_PATH = FLAI_OVERVIEW_URL;
 
 function resolvePointCloudUrl(value) {

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Quadtree } from '../src/tiled-copc/quadtree.js';
 import { cellsNear, cornersCovered, screenRadius, syncMaterial, tileSphere } from '../src/tiled-copc/lod.js';
-import { flaiQueryUrl, staticCatalogue } from '../src/tiled-copc/catalogues.js';
+import { cellIndexCatalogue, flaiQueryUrl, groupTilesByCell, staticCatalogue } from '../src/tiled-copc/catalogues.js';
 
 test('Flai query projects a closed polygon and retains pagination', () => {
   const url = new URL(flaiQueryUrl('https://example.org/pointclouds', [1, 2, 3, 4], ([x, y]) => [x * 10, y * 10], 2));
@@ -59,4 +59,32 @@ test('tiles mirror the overview material without redundant writes', () => {
   });
   syncMaterial(from, to);
   assert.deepEqual(writes, ['size']);
+});
+
+test('tile index groups tiles into cells and reads them back', async () => {
+  const cells = groupTilesByCell([
+    { path: 'copc/a.copc.laz', extent: [103500, 155500, 35.611, 103999.99, 155999.98, 72.29] },
+    { path: 'copc/b.copc.laz', extent: [3900, 0, 0, 4100, 500, 1] },
+  ], 4000);
+  assert.deepEqual([...cells.keys()].sort(), ['0_0', '1_0', '25_38']);
+  assert.deepEqual(cells.get('25_38'), [['copc/a.copc.laz', 103500, 155500, 35.61, 103999.99, 155999.98, 72.29]]);
+
+  const files = {
+    '/idx/meta.json': { host: 'https://s3.example', cellSize: 4000 },
+    '/idx/25_38.json': cells.get('25_38'),
+  };
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    const body = files[new URL(url).pathname];
+    return body ? new Response(JSON.stringify(body)) : new Response('', { status: 404 });
+  };
+  try {
+    const catalogue = cellIndexCatalogue({ url: 'https://site.example/idx/' });
+    const [tile] = await catalogue.query([100000, 152000, 104000, 156000]);
+    assert.equal(tile.url, 'https://s3.example/copc/a.copc.laz');
+    assert.equal(tile.name, 'a.copc.laz');
+    assert.deepEqual(await catalogue.query([0, -4000, 4000, 0]), []);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });

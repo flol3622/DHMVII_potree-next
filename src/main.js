@@ -6,11 +6,12 @@ import {
   INITIAL_VIEW,
   IS_FLAI_OVERVIEW,
   FLAI_DATASET_ID,
+  TILE_INDEX_URL,
   MAP_TILE_URL,
   POINT_CLOUD_NAME,
   POINT_CLOUD_URL,
 } from "./config.js";
-import { createTiledCopc, flaiCatalogue } from "./tiled-copc/index.js";
+import { cellIndexCatalogue, createTiledCopc, flaiCatalogue } from "./tiled-copc/index.js";
 import { initializeMapTab } from "./map.js";
 import { initializeLasExport } from "./las-export.js";
 import "./styles/main.css";
@@ -179,7 +180,9 @@ async function loadPointCloud() {
       createTiledCopc({
         viewer,
         overview: pointCloud,
-        catalogue: flaiCatalogue({ datasetId: FLAI_DATASET_ID, crs: "EPSG:31370" }),
+        catalogue: TILE_INDEX_URL
+          ? cellIndexCatalogue({ url: TILE_INDEX_URL })
+          : flaiCatalogue({ datasetId: FLAI_DATASET_ID, crs: "EPSG:31370" }),
         onStatus: ({ wanted, loaded, failed }) => {
           status.textContent = failed
             ? "Tile catalogue unavailable · showing overview · retrying"
