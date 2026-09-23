@@ -2,7 +2,7 @@
 <div id="sidebar_root" class="">
 	<div id="sidebar_header">
 		<span id="potree_branding" class="potree_sidebar_brand">
-			<a href="https://github.com/flol3622/DHMVII_potree-next" target="_blank" rel="noopener">source</a>
+			<a href="https://github.com/flol3622/DHMVII_potree-next/tree/feat/flai-dhmvii-source" target="_blank" rel="noopener">source</a>
 			<span style="margin: 0px 3px"> · </span>
 			<a href="https://remotesensing.vlaanderen.be/apps/openlidar/" target="_blank" rel="noopener">DHMV&nbsp;II data</a>
 			<span style="margin: 0px 3px"> · </span>
@@ -172,8 +172,8 @@
 
 				<li class="about-block">
 					<p><b>Flanders in Points</b> streams DHMV&nbsp;II &mdash; the Flemish government&rsquo;s national LiDAR survey, flown 2013&ndash;2015 at &ge;&nbsp;8&nbsp;points/m&sup2; &mdash; straight into this browser tab. No install, no download, no desktop GIS.</p>
-					<p>The whole cloud is <b>one COPC file</b> on a plain web server: no tile pyramid, no database, no backend. The browser requests the couple of megabytes of that file your current view needs, and nothing else.</p>
-					<p class="about-note">A research demonstration built at Ghent University on public open data. Every point here is DHMV&nbsp;II, re-encoded &mdash; the survey is not ours.</p>
+					<p>The survey is read as <b>COPC</b> directly from Amazon&nbsp;S3, where <a href="https://hub.flai.ai" target="_blank" rel="noopener">Flai</a> hosts a reduced-detail overview and 78,809 full-resolution tiles. The viewer shows them as one model and requests only the byte ranges your current view needs. There is no backend of its own.</p>
+					<p class="about-note">A research demonstration built at Ghent University on public open data. Every point here is DHMV&nbsp;II &mdash; the survey is not ours, and neither is the hosting.</p>
 				</li>
 
 				<div class="divider"><span>How it works</span></div>
@@ -181,15 +181,15 @@
 				<li class="about-block">
 					<div class="about-step">
 						<span class="about-step-num">1</span>
-						<span><b><a href="https://remotesensing.vlaanderen.be/apps/openlidar/" target="_blank" rel="noopener">DHMV&nbsp;II</a></b><br>100k+ open LAZ tiles, ~3.3&nbsp;TB, fetched onto HPC storage.</span>
+						<span><b><a href="https://remotesensing.vlaanderen.be/apps/openlidar/" target="_blank" rel="noopener">DHMV&nbsp;II</a></b><br>Open LiDAR survey of Flanders by Digitaal Vlaanderen.</span>
 					</div>
 					<div class="about-step">
 						<span class="about-step-num">2</span>
-						<span><b><a href="https://github.com/360-geo/copc-converter" target="_blank" rel="noopener">copc_converter</a></b><br>An out-of-core Rust merge into a single COPC octree &mdash; 21.5&nbsp;hours, 372 core-hours.</span>
+						<span><b><a href="https://hub.flai.ai/dataset/b729323b-332c-46e7-878d-acac932b1013" target="_blank" rel="noopener">Flai on Amazon&nbsp;S3</a></b><br>An overview COPC, 78,809 COPC tiles of 500&nbsp;&times;&nbsp;500&nbsp;m, and a catalogue API.</span>
 					</div>
 					<div class="about-step">
 						<span class="about-step-num">3</span>
-						<span><b>This viewer</b><br>Potree-Next, reduced to what one deployment needs, reading HTTP byte ranges.</span>
+						<span><b>This viewer</b><br>Potree-Next, reduced to what one deployment needs, streaming overview and tiles as one octree over HTTP byte ranges.</span>
 					</div>
 				</li>
 
@@ -201,20 +201,16 @@
 						<span>The DHMV&nbsp;II survey itself &mdash; flown, processed, and released openly.</span>
 					</div>
 					<div class="about-credit">
-						<a href="https://copc.io/" target="_blank" rel="noopener">Hobu, Inc.</a>
-						<span>The COPC specification. One file, no tiling, no special server.</span>
+						<a href="https://hub.flai.ai" target="_blank" rel="noopener">Flai</a>
+						<span>The COPC tiles, overview and catalogue API, hosted on Amazon&nbsp;S3. Their Lidar Hub viewer inspired how tiles are streamed here.</span>
 					</div>
 					<div class="about-credit">
-						<a href="https://github.com/360-geo/copc-converter" target="_blank" rel="noopener">360-geo / copc-converter</a>
-						<span>The converter that merged the whole tile collection into one octree. MIT.</span>
+						<a href="https://copc.io/" target="_blank" rel="noopener">Hobu, Inc.</a>
+						<span>The COPC specification. Range requests into plain files, no special server.</span>
 					</div>
 					<div class="about-credit">
 						<a href="https://github.com/m-schuetz/Potree-Next" target="_blank" rel="noopener">Markus Sch&uuml;tz</a>
 						<span>Potree and Potree-Next &mdash; a decade of rendering massive point clouds in a browser, and the COPC support underneath this page. AGPL-3.0.</span>
-					</div>
-					<div class="about-credit">
-						<a href="https://www.ugent.be/hpc/en" target="_blank" rel="noopener">Ghent University HPC</a>
-						<span>Compute, storage, and patience for a 21.5-hour job.</span>
 					</div>
 					<p class="about-note">Base map &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors (ODbL); geocoding by <a href="https://photon.komoot.io/" target="_blank" rel="noopener">Photon</a>/Komoot. Bundled browser libraries keep their own licences.</p>
 				</li>
@@ -222,16 +218,16 @@
 				<div class="divider"><span>Licence</span></div>
 
 				<li class="about-block">
-					<p><b>The code</b> is <a href="https://github.com/flol3622/DHMVII_potree-next/blob/main/LICENSE" target="_blank" rel="noopener">AGPL-3.0-only</a>, inherited from Potree-Next. Because you are using it over a network, &sect;&nbsp;13 applies and the source of this deployment is public: <a href="https://github.com/flol3622/DHMVII_potree-next" target="_blank" rel="noopener">github.com/flol3622/DHMVII_potree-next</a>.</p>
-					<p><b>The data</b> is not ours to license. DHMV&nbsp;II is Flemish government open data, and its core condition is attribution to the data owner. Check the <a href="https://remotesensing.vlaanderen.be/apps/openlidar/" target="_blank" rel="noopener">source</a> before redistributing anything derived from it.</p>
+					<p><b>The code</b> is <a href="https://github.com/flol3622/DHMVII_potree-next/blob/feat/flai-dhmvii-source/LICENSE" target="_blank" rel="noopener">AGPL-3.0-only</a>, inherited from Potree-Next. Because you are using it over a network, &sect;&nbsp;13 applies and the source of this deployment is public: <a href="https://github.com/flol3622/DHMVII_potree-next/tree/feat/flai-dhmvii-source" target="_blank" rel="noopener">github.com/flol3622/DHMVII_potree-next</a> (branch <code>feat/flai-dhmvii-source</code>).</p>
+					<p><b>The data</b> is not ours to license. DHMV&nbsp;II is Flemish government open data under the <a href="https://assets.vlaanderen.be/image/upload/v1679331485/GratisopendatalicentieVlaanderenv12_bqxu2t.pdf" target="_blank" rel="noopener">Gratis Open Data Licentie Vlaanderen</a>, whose core condition is attribution to the data owner. The hosted COPC files are provided by Flai; see <a href="https://hub.flai.ai" target="_blank" rel="noopener">hub.flai.ai</a> for their terms.</p>
 					<p>Use it, fly through it, screenshot it, cite it. Suggested attribution:</p>
-					<p class="about-cite">Point cloud: DHMV&nbsp;II, &copy;&nbsp;Digitaal Vlaanderen, open data. Viewer: Flanders in Points, AGPL-3.0, derived from Potree-Next (Markus Sch&uuml;tz). Format: COPC (Hobu,&nbsp;Inc.). Conversion: copc-converter (360-geo).</p>
+					<p class="about-cite">Point cloud: DHMV&nbsp;II, &copy;&nbsp;Digitaal Vlaanderen, open data (Gratis Open Data Licentie Vlaanderen). COPC hosting: Flai (hub.flai.ai), on Amazon&nbsp;S3. Viewer: Flanders in Points, AGPL-3.0, derived from Potree-Next (Markus Sch&uuml;tz). Format: COPC (Hobu,&nbsp;Inc.).</p>
 				</li>
 
 				<div class="divider"><span>Funding</span></div>
 
 				<li class="about-block">
-					<p>This work has been (partially) funded by the <b>Flanders AI Research program</b>, and carried out at <a href="https://www.ugent.be/en" target="_blank" rel="noopener">Ghent University</a>, whose HPC infrastructure provided the compute and storage the conversion needed.</p>
+					<p>This work has been (partially) funded by the <b>Flanders AI Research program</b>, and carried out at <a href="https://www.ugent.be/en" target="_blank" rel="noopener">Ghent University</a>.</p>
 				</li>
 
 			</ul>
